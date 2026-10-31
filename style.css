@@ -263,3 +263,8 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
   font-style: italic;
   font-size: 18px;
 }
+
+.card-desc, .card-body, .card-body p, .about p {
+  text-align: justify;
+  hyphens: auto;
+}
