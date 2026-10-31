@@ -36,7 +36,7 @@ Then run `python3 build.py`.
 
 Give your LLM this instruction:
 
-> Create a new file `posts/YYYY-MM-DD-<slug>.md` (date = today unless specified). Start with YAML frontmatter between `---` lines: `title` (required), `date` (YYYY-MM-DD), `url` (string or null), `description` (string or null), `tags` (list of strings), `links` (optional list of `{label, url}` or URL strings), `image` (url or null). Then a blank line and the body in Markdown (paragraphs, fenced code, bullet lists, `##`/`###` headings). Voice: first-person, practical, concrete numbers, no marketing words, no em-dashes, no emoji, at most one `!`. Link every tool/project on first mention; explain non-obvious flags. Body uses only paragraphs, fenced code, inline code, bold, links, bullet lists, and `##`/`###` headings; put "See also" links in `links`. Title ≤ 60 chars, no trailing period. Facts and URLs must come from the source. Do not edit other files. Then run `python3 build.py` (set `SITE_URL` env var to your site URL) to regenerate `posts.jsonl` and `rss.xml`.
+> See the Obsidian note `Style - Giorgos Logiotatidis.md` for the full voice, shape, and checklist. The post schema: `posts/YYYY-MM-DD-<slug>.md` with YAML frontmatter (`title`, `date`, `url`, `description`, `tags`, `links`, `image`) plus a Markdown body. Do not edit other files. Then run `python3 build.py` (set `SITE_URL`) to regenerate `posts.jsonl` and `rss.xml`.
 
 Validate before committing:
 
