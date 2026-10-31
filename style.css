@@ -264,7 +264,11 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
   font-size: 18px;
 }
 
-.card-desc, .card-body, .card-body p, .about p {
+.card-desc, .card-body p, .about p {
   text-align: justify;
   hyphens: auto;
+}
+.card-body pre, .card-body ul, .card-body li, .see-also {
+  text-align: left;
+  hyphens: none;
 }
