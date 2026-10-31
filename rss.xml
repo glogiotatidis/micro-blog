@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>mini-blog — Giorgos Logiotatidis</title>
-    <link>https://glogiotatidis.github.io/mini-blog/</link>
+    <title>micro-blog — Giorgos Logiotatidis</title>
+    <link>https://giorgos.sealabs.net/</link>
     <description>Personal activity log: things I build, in order.</description>
     <language>en</language>
-    <atom:link href="https://glogiotatidis.github.io/mini-blog/rss.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://giorgos.sealabs.net/rss.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>A place for the things I build</title>
-      <link>https://glogiotatidis.github.io/mini-blog/</link>
-      <guid isPermaLink="false">https://glogiotatidis.github.io/mini-blog/#2026-10-31</guid>
+      <link>https://giorgos.sealabs.net/</link>
+      <guid isPermaLink="false">https://giorgos.sealabs.net/#2026-10-31</guid>
       <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
       <description><![CDATA[I'm starting a small timeline to post the things I build, as I build them. Short entries, links, snippets. No comments, no analytics.
 
