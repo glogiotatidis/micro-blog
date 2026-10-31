@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="../feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>docker tag // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../theme/css/pure.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="../images/avatar.png">
+                            <h1 class="brand-main"><a href="../index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="../feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+Posts tagged 'docker'                </h1>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../snippet-testing-with-firefox-on-docker.html">Snippet testing with Firefox on Docker</a></h3>
+                            <p class="post-meta"><p>Mozilla's <a href="https://snippets.mozilla.com/">Snippets Service</a> feeds
+Firefox for Desktop and Android with small HTML or JSON blobs with
+content to display about:home page. That's the page users get when
+they open up Firefox.</p>
+<p>Desktop snippets are usually a line of text and an icon but the
+service supports much more complicated snippets. Multiple choice forms
+for our end of year fund raising campaigns, videos about
+<a href="https://snippets.cdn.mozilla.net/media/files/e29ada39-11f4-4157-ae1c-1340d9455692.webm">our mission</a>,
+interactions with the browser Chrome and others. We even had a HTML5
+game going once!</p>
+<p>As the snippets increase more and more in complexity we need better
+ways to test them. Unfortunately we have …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software,</a> &middot; Thu 12 November 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../downloading-hds-flash-f4m-video-streams.html">Downloading HDS Flash (f4m) video streams.</a></h3>
+                            <p class="post-meta"><p>Some WebTV or other video streaming websites use a special Adobe
+(surprise, surprise) inspired protocol to stream their content. The
+special thing about this protocol is that the file is split into
+chunks which I guess is good if you want to jump on different points
+in the video or you have an unstable internet connection but really
+annoying if you just want to download the video and view it in a
+different player.</p>
+<p>This protocol is called
+<a href="https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming#Adobe_Dynamic_Streaming_for_Flash">Abode Dynamic Streaming for Flash</a>
+and usually the sites link to <code>f4m</code> manifest files. From the
+<a href="https://en.wikipedia.org/wiki/SWF">SWF Wikipedia Page</a> we read get …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Wed 21 October 2015
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../fleet-job-to-remove-unused-docker-images.html">Fleet job to remove unused docker images</a></h3>
+                            <p class="post-meta"><p>Engagement Engineering, the team that I'm part of at
+<a href="https://www.mozilla.org">Mozilla</a>, runs two <a href="http://deis.io">Deis</a>
+clusters on AWS to host important websites including www.mozilla.org.</p>
+<p><a href="http://deis.io">Deis</a> is a Heroku-inspired PaaS which utilizes
+<a href="http://coreos.com/">CoreOS</a> and <a href="http://docker.io/">Docker</a>. It's a
+great open-source project,
+<a href="https://github.com/deis/deis">developed in the public</a>, with a great
+Community and commercially backed by Engine Yard.</p>
+<p>Apps on Deis run within Docker containers which run on CoreOS machines
+that form the Deis cluster. Each new release of your code, i.e. each
+new <em>deis pull</em> or <em>git push</em>, creates a new Docker image that is
+stored in the internal Deis Docker Registry and …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Tue 13 October 2015
+                            </p>
+                        </header>
+                    </section>
+<div class="pagination-wrapper content-subhead">
+</div><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

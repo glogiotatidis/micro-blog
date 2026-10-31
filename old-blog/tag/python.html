@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="../feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>python tag // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../theme/css/pure.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="../images/avatar.png">
+                            <h1 class="brand-main"><a href="../index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="../feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+Posts tagged 'python'                </h1>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../monitoring-python-cron-jobs-with-babis.html">Monitoring python cron jobs with Babis</a></h3>
+                            <p class="post-meta"><p>Over at <a href="http://mzl.la/meao">MozMeao</a> we are
+using <a href="http://apscheduler.readthedocs.org/">APScheduler</a> to schedule the
+execution of periodic tasks, like Django management tasks to clear sessions or
+to fetch new job listings for Mozilla Careers website.</p>
+<p>A couple of services provide monitoring of cron job execution
+including <a href="http://healthchecks.io/">HealthChecks.io</a>
+and <a href="http://deadmanssnitch.com/">DeadManSnitch</a>. The idea is that you ping a URL
+after the successful run of the cron job. If the service does not receive a ping
+within a predefined time window then it triggers notifications to let you know.</p>
+<p>With shell scripts this is as simple as running <code>curl</code> after your command:</p>
+<div class="highlight"><pre><span></span>$ ./manage.py clearsessions <span class="o">&amp;&amp;</span> curl …</pre></div></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Wed 24 May 2017
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../january-in-athens-python-users-meetup.html">January in Athens Python Users Meetup</a></h3>
+                            <p class="post-meta"><p>On 24th of January we had the first Python meetup for 2017 as always
+in <a href="http://hackerspace.gr/">Hackerspace.gr</a>. Based on our typical setup we
+started with two talks:</p>
+<ul>
+<li>
+<p>Myself, I kicked off the meetup with a <a href="http://micropython.org/">Micropython</a>
+   on <a href="https://en.wikipedia.org/wiki/ESP8266">ESP8266</a> talk. I started with
+   quick intros on Micropython and the ESP8266, moved to using the RERL over
+   Serial with minicom and ended spectacularly with blinking neopixels.</p>
+</li>
+<li>
+<p><a href="https://github.com/tyler46">Spyros</a> followed talking
+   about <a href="https://github.com/nameko/nameko">Nameco</a> based microservices and
+   his <a href="https://github.com/tyler46/tweetmark">Tweetmark</a> project to save tweets
+   for later reading and do it in style. Moved on with a live demo and
+   successfully fixed the obligatory demo bug defeating …</p></li></ul></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Fri 03 February 2017
+                            </p>
+                        </header>
+                    </section>
+<div class="pagination-wrapper content-subhead">
+</div><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

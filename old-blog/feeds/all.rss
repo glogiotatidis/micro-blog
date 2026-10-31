@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Read at G's</title><link>https://giorgos.sealabs.net/</link><description></description><lastBuildDate>Tue, 21 Aug 2018 14:01:00 +0300</lastBuildDate><item><title>Using Brotli compression to reduce CDN costs</title><link>https://giorgos.sealabs.net/using-brotli-compression-to-reduce-cdn-costs.html</link><description>&lt;p&gt;&lt;em&gt;This article appeared originally on &lt;a href="https://mozilla.github.io/meao/2018/08/17/snippets-brotli/"&gt;Mozilla Marketing Engineering &amp;amp; Operations
+blog&lt;/a&gt;&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href="https://github.com/mozilla/snippets-service/"&gt;Snippets Service&lt;/a&gt; allows
+Mozilla to communicate with Firefox users directly by placing a snippet of text
+and an image on their new tab page. Snippets share exciting news from the
+Mozilla World, useful tips and tricks based on user activity and sometimes
+jokes.&lt;/p&gt;
+&lt;p&gt;To achieve personalized, activity based messaging in a privacy respecting and
+efficient manner, the service creates a Bundle of Snippets per locale. Bundles
+are HTML documents that contain all Snippets targeted to a group of users,
+including their Style-Sheets, images, metadata and the JS decision engine …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 21 Aug 2018 14:01:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2018-08-21:/using-brotli-compression-to-reduce-cdn-costs.html</guid><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>NeReS: Manage NewRelic Synthetics Monitors from the command line.</title><link>https://giorgos.sealabs.net/neres-manage-newrelic-synthetics-monitors-from-the-command-line.html</link><description>&lt;p&gt;NewRelic &lt;a href="http://synthetics.newrelic.com/"&gt;Synthetics&lt;/a&gt; is a service to monitor
+websites that comes free of charge with all accounts and offers a satisfying set
+of features:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Website up-time monitoring from multiple locations around the world&lt;/li&gt;
+&lt;li&gt;Content validation&lt;/li&gt;
+&lt;li&gt;SSL certificate validation&lt;/li&gt;
+&lt;li&gt;Email alerting on error&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;I developed &lt;a href="https://pypi.python.org/pypi/neres/0.4.0"&gt;NeReS&lt;/a&gt;, an (unofficial)
+cli tool to manage monitors from the command line.&lt;/p&gt;
+&lt;p&gt;NeReS can &lt;em&gt;list&lt;/em&gt; the current account monitors, &lt;em&gt;add&lt;/em&gt; new, &lt;em&gt;edit&lt;/em&gt; or &lt;em&gt;delete&lt;/em&gt;
+existing ones. It can also return the information in raw JSON format so you can
+further process and automate your monitor generation using tools
+like &lt;a href="https://stedolan.github.io/jq/"&gt;&lt;code&gt;jq&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Using NeReS you can automate the generation …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Fri, 03 Nov 2017 13:34:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2017-11-03:/neres-manage-newrelic-synthetics-monitors-from-the-command-line.html</guid><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Automating Podcast generation from SoundCloud</title><link>https://giorgos.sealabs.net/automating-podcast-generation-from-soundcloud.html</link><description>&lt;p&gt;There's this popular &lt;a href="http://ellinofreneianet.gr"&gt;daily FM Radio show&lt;/a&gt; in
+Greece which posts their shows on SoundCloud after broadcasting them. It's a
+good -albeit not great, just HTML5 audio is fine- way to listen the show on
+demand if you're on Desktop. The website is not mobile friendly and the whole
+embedded SoundCloud experience is sub-optimal. Let alone that you cannot just
+add the feed to your favorite podcast player to enjoy it.&lt;/p&gt;
+&lt;p&gt;There's an
+&lt;a href="https://itunes.apple.com/gr/podcast/%CE%B5%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1/id443416137"&gt;RSS feed on iTunes&lt;/a&gt; but
+it's manually updated and inevitably lags a day or two behind, depending on the
+availability of the maintainer.&lt;/p&gt;
+&lt;p&gt;I decided to fix …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 10 Oct 2017 16:10:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2017-10-10:/automating-podcast-generation-from-soundcloud.html</guid><category>mozilla-planet</category><category>ellak-planet</category><category>podcast</category></item><item><title>Monitoring python cron jobs with Babis</title><link>https://giorgos.sealabs.net/monitoring-python-cron-jobs-with-babis.html</link><description>&lt;p&gt;Over at &lt;a href="http://mzl.la/meao"&gt;MozMeao&lt;/a&gt; we are
+using &lt;a href="http://apscheduler.readthedocs.org/"&gt;APScheduler&lt;/a&gt; to schedule the
+execution of periodic tasks, like Django management tasks to clear sessions or
+to fetch new job listings for Mozilla Careers website.&lt;/p&gt;
+&lt;p&gt;A couple of services provide monitoring of cron job execution
+including &lt;a href="http://healthchecks.io/"&gt;HealthChecks.io&lt;/a&gt;
+and &lt;a href="http://deadmanssnitch.com/"&gt;DeadManSnitch&lt;/a&gt;. The idea is that you ping a URL
+after the successful run of the cron job. If the service does not receive a ping
+within a predefined time window then it triggers notifications to let you know.&lt;/p&gt;
+&lt;p&gt;With shell scripts this is as simple as running &lt;code&gt;curl&lt;/code&gt; after your command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ ./manage.py clearsessions &lt;span class="o"&gt;&amp;amp;&amp;amp;&lt;/span&gt; curl …&lt;/pre&gt;&lt;/div&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Wed, 24 May 2017 12:21:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2017-05-24:/monitoring-python-cron-jobs-with-babis.html</guid><category>mozilla-planet</category><category>ellak-planet</category><category>python</category></item><item><title>January in Athens Python Users Meetup</title><link>https://giorgos.sealabs.net/january-in-athens-python-users-meetup.html</link><description>&lt;p&gt;On 24th of January we had the first Python meetup for 2017 as always
+in &lt;a href="http://hackerspace.gr/"&gt;Hackerspace.gr&lt;/a&gt;. Based on our typical setup we
+started with two talks:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;Myself, I kicked off the meetup with a &lt;a href="http://micropython.org/"&gt;Micropython&lt;/a&gt;
+   on &lt;a href="https://en.wikipedia.org/wiki/ESP8266"&gt;ESP8266&lt;/a&gt; talk. I started with
+   quick intros on Micropython and the ESP8266, moved to using the RERL over
+   Serial with minicom and ended spectacularly with blinking neopixels.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;a href="https://github.com/tyler46"&gt;Spyros&lt;/a&gt; followed talking
+   about &lt;a href="https://github.com/nameko/nameko"&gt;Nameco&lt;/a&gt; based microservices and
+   his &lt;a href="https://github.com/tyler46/tweetmark"&gt;Tweetmark&lt;/a&gt; project to save tweets
+   for later reading and do it in style. Moved on with a live demo and
+   successfully fixed the obligatory demo bug defeating …&lt;/p&gt;&lt;/li&gt;&lt;/ul&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Fri, 03 Feb 2017 13:03:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2017-02-03:/january-in-athens-python-users-meetup.html</guid><category>mozilla-planet</category><category>ellak-planet</category><category>python</category></item><item><title>Getting advantage of docker image cache on 1.13</title><link>https://giorgos.sealabs.net/getting-advantage-of-docker-image-cache-on-113.html</link><description>&lt;p&gt;Last week's release of Docker (v1.13) added the &lt;code&gt;cache-from&lt;/code&gt; build flag which
+allows the use of local images as build cache and solves the
+layer &lt;a href="https://giorgos.sealabs.net/docker-cache-on-travis-and-docker-112.html"&gt;caching issue created by Content Addressability&lt;/a&gt;
+as I've blogged before.&lt;/p&gt;
+&lt;p&gt;To use the new feature and take advantage of the caching for faster image builds
+first pull the image that you want to base you build upon and then build using
+&lt;code&gt;--cache-from&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;For example:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker pull myimage:v1.0
+docker build --cache-from myimage:v1.0 -t myimage:v1.1 .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;You should always keep in mind though that you must fully trust the registry
+you're …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Mon, 23 Jan 2017 17:15:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2017-01-23:/getting-advantage-of-docker-image-cache-on-113.html</guid><category>travis</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Taco Bell Parallel Programming</title><link>https://giorgos.sealabs.net/taco-bell-parallel-programming.html</link><description>&lt;p&gt;While working on migrating support.mozilla.org away from
+&lt;a href="https://github.com/mozilla/kitsune"&gt;Kitsune&lt;/a&gt; (which is a great community
+support platform that needs love, remember that internet) I needed to convert
+about 4M database rows of a custom, Markdown inspired, format to HTML.&lt;/p&gt;
+&lt;p&gt;The challenge of the task is that it needs to happen as fast as possible so we
+can dump the database, convert the data and load the database onto the new
+platform with the minimum possible time between the first and the last step.&lt;/p&gt;
+&lt;p&gt;I started a fresh MySQL container and started hacking:&lt;/p&gt;
+&lt;h2&gt;Load the database dump&lt;/h2&gt;
+&lt;p&gt;Kitsune's database weights about …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Thu, 01 Dec 2016 16:08:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-12-01:/taco-bell-parallel-programming.html</guid><category>mysql</category><category>django</category><category>parallel</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Systemd Unit to activate loopback devices before LVM</title><link>https://giorgos.sealabs.net/systemd-unit-to-activate-loopback-devices-before-lvm.html</link><description>&lt;p&gt;In a Debian server I'm using LVM to create a single logical volume from multiple
+different volumes. One of the volumes is a loop-back device which refers to a
+file in another filesystem.&lt;/p&gt;
+&lt;p&gt;The loop-back device needs to be activated before the LVM service starts or the
+later will fail due to missing volumes. To do so a special systemd unit needs to
+be created which will not have the default dependencies of units and will get
+executed before &lt;code&gt;lvm2-activation-early service&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Systemd will set a number of dependencies for all units by default to bring the
+system into a usable …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Mon, 17 Oct 2016 14:53:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-10-17:/systemd-unit-to-activate-loopback-devices-before-lvm.html</guid><category>mozilla-planet</category><category>ops</category><category>ellak-planet</category></item><item><title>Docker cache on Travis and Docker 1.12</title><link>https://giorgos.sealabs.net/docker-cache-on-travis-and-docker-112.html</link><description>&lt;blockquote&gt;
+&lt;h4&gt;Edits&lt;/h4&gt;
+&lt;p&gt;&lt;strong&gt;2016-09-12&lt;/strong&gt; Edited to prevent caching of builds in pull requests.&lt;br/&gt;
+&lt;strong&gt;2017-07-07&lt;/strong&gt; Edited to point to exact git commit b/c we don't use Travis for
+Snippets Service anymore.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;I blogged before about
+&lt;a href="https://giorgos.sealabs.net/build-and-test-against-docker-images-in-travis.html"&gt;building Docker images on Travis&lt;/a&gt; and suggested
+uploading images after successful test runs to Docker Hub and use them as Cache
+after downloading them in next Travis runs.&lt;/p&gt;
+&lt;p&gt;Travis upgraded recently to Docker version 1.12 (from 1.9) and since version
+1.10 Docker features Content Addressability for layers. This change breaks
+caching and we need to implement a workaround using Travis cache.&lt;/p&gt;
+&lt;p&gt;Changes need to …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Thu, 01 Sep 2016 13:11:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-09-01:/docker-cache-on-travis-and-docker-112.html</guid><category>travis</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>User friendly website analytics with Sandstorm Oasis and Piwik</title><link>https://giorgos.sealabs.net/user-friendly-website-analytics-with-sandstorm-oasis-and-piwik.html</link><description>&lt;p&gt;&lt;a href="http://piwik.org/"&gt;Piwik&lt;/a&gt; is a great FLOSS website analytics platform. I've
+been self hosting it for different small websites I've managed through the
+years. Although it's fairly easy to setup and maintain at this level of use, I
+want to avoid having another service in my maintenance list.&lt;/p&gt;
+&lt;p&gt;While looking for user and web respecting alternatives -read looking for
+something else than Google Analytics- I realized that
+&lt;a href="https://oasis.sandstorm.io/"&gt;Sandstorm Oasis&lt;/a&gt; does support Piwik.&lt;/p&gt;
+&lt;p&gt;I logged-in and setup my Piwik instance, or Grain as Sandstorm calls instances,
+in less than 30 of seconds. The tricky part is to copy the code provided by
+Sandstorm …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 26 Jul 2016 16:04:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-07-26:/user-friendly-website-analytics-with-sandstorm-oasis-and-piwik.html</guid><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Build and Test against Docker Images in Travis</title><link>https://giorgos.sealabs.net/build-and-test-against-docker-images-in-travis.html</link><description>&lt;p&gt;The road towards the absolute CI/CD pipeline goes through building Docker images
+and deploying them to production. The code included in the images gets unit
+tested, both locally during development and after merging in master branch using
+&lt;a href="https://travis-ci.org"&gt;Travis&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;But Travis builds its own environment to run the tests on which could be
+different from the environment of the docker image. For example Travis may be
+running tests in a Debian based VM with libjpeg version X and our to-be-deployed
+docker image runs code on-top of Alpine with libjpeg version Y.&lt;/p&gt;
+&lt;p&gt;To ensure that the image to be deployed to …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Fri, 17 Jun 2016 14:40:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-06-17:/build-and-test-against-docker-images-in-travis.html</guid><category>travis</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Remove users from git-crypt enabled repository</title><link>https://giorgos.sealabs.net/remove-users-from-git-crypt-enabled-repository.html</link><description>&lt;p&gt;&lt;a href="https://www.agwa.name/projects/git-crypt/"&gt;Git crypt&lt;/a&gt; is a neat git extension
+to encrypt some files - if not all - in a git repository. Integrates nicely with
+git using filters and it's use is completely transparent once you have unlocked
+a repository.&lt;/p&gt;
+&lt;p&gt;Using git-crypt you can still share a repository in public and maintain a set of
+files with secrets that are accessible to a limited number of users. Especially
+useful for open source projects.&lt;/p&gt;
+&lt;p&gt;At some point maybe you'll need to remove one of the users who have access to
+the encrypted files. Git-crypt does not provide a command to remove users (yet)
+because it's …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 24 May 2016 14:25:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-05-24:/remove-users-from-git-crypt-enabled-repository.html</guid><category>ops</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Takis - A util that blocks until a port is open.</title><link>https://giorgos.sealabs.net/takis-a-util-that-blocks-until-a-port-is-open.html</link><description>&lt;p&gt;Over at Mozilla's Engagement Engineering we use Docker to ship our websites. We
+build the docker images in CI and then we run tests against them. Our tests
+usually need a database or a cache server which you can get it running
+simply with a single command:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;docker run -d mariadb
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;The problem is that this container will take some time to initialize and become
+available to accept connections. Depending on what your test and how you run
+your tests this delay can cause a test failure to due database connection
+timeouts.&lt;/p&gt;
+&lt;p&gt;We used to wait on executing our tests …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Mon, 16 May 2016 16:20:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-05-16:/takis-a-util-that-blocks-until-a-port-is-open.html</guid><category>ops</category><category>homebrewed-web</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Static site hosting on Dokku and Deis</title><link>https://giorgos.sealabs.net/static-site-hosting-on-dokku-and-deis.html</link><description>&lt;p&gt;&lt;a href="http://deis.io/"&gt;Deis&lt;/a&gt; and &lt;a href="http://dokku.viewdocs.io/"&gt;Dokku&lt;/a&gt;, the open source
+Heroku-like PaaS, can be used for hosting static sites too. Since they both
+support Dockerfile based deployments all we need is an Docker Image with Nginx.&lt;/p&gt;
+&lt;p&gt;I created
+&lt;a href="https://hub.docker.com/r/giorgos/dokku-static-site/"&gt;giorgos/dokku-static-site&lt;/a&gt;
+which uses the ONBUILD instruction. To use it create a Dockerfile at the root
+directory of your static site with only one line:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;FROM giorgos/dokku-static-site
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;and then place all your files under the &lt;code&gt;html&lt;/code&gt; directory. If moving your website
+files to another directory isn't in your plans, you can alternatively create a
+symbolic link&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;ln -s . html
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then push to your Deis / Dokku …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Mon, 09 May 2016 15:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-05-09:/static-site-hosting-on-dokku-and-deis.html</guid><category>ops</category><category>homebrewed-web</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Host your own music server with supysonic</title><link>https://giorgos.sealabs.net/host-your-own-music-server-with-supysonic.html</link><description>&lt;p&gt;I like to self-host services to make things fit my needs instead of the other
+way around and to satisfy my need to control my data. Also remember that self
+hosting is really important for the health of the open web and internet.&lt;/p&gt;
+&lt;p&gt;There are a couple of options for self-hosted media servers. I always go for
+FLOSS solutions, so &lt;a href="https://plex.tv/"&gt;Plex&lt;/a&gt; and friends are not an option. A
+couple of years ago I tried &lt;a href="http://subsonic.org/"&gt;Subsonic&lt;/a&gt;, including the
+&lt;a href="http://madsonic.org/"&gt;MadSonic&lt;/a&gt; and
+&lt;a href="https://github.com/hakko/musiccabinet"&gt;Musicabinet&lt;/a&gt; forks. Subsonic looked
+really outdated at that time, so that didn't last long. Musicabinet was second
+in my evaluation and …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Wed, 27 Apr 2016 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2016-04-27:/host-your-own-music-server-with-supysonic.html</guid><category>ops</category><category>homebrewed-web</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Snippet testing with Firefox on Docker</title><link>https://giorgos.sealabs.net/snippet-testing-with-firefox-on-docker.html</link><description>&lt;p&gt;Mozilla's &lt;a href="https://snippets.mozilla.com/"&gt;Snippets Service&lt;/a&gt; feeds
+Firefox for Desktop and Android with small HTML or JSON blobs with
+content to display about:home page. That's the page users get when
+they open up Firefox.&lt;/p&gt;
+&lt;p&gt;Desktop snippets are usually a line of text and an icon but the
+service supports much more complicated snippets. Multiple choice forms
+for our end of year fund raising campaigns, videos about
+&lt;a href="https://snippets.cdn.mozilla.net/media/files/e29ada39-11f4-4157-ae1c-1340d9455692.webm"&gt;our mission&lt;/a&gt;,
+interactions with the browser Chrome and others. We even had a HTML5
+game going once!&lt;/p&gt;
+&lt;p&gt;As the snippets increase more and more in complexity we need better
+ways to test them. Unfortunately we have …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Thu, 12 Nov 2015 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-11-12:/snippet-testing-with-firefox-on-docker.html</guid><category>mozilla</category><category>snippets</category><category>docker</category><category>mozilla-planet</category></item><item><title>Programming Pro Trinket with an Arduino</title><link>https://giorgos.sealabs.net/programming-pro-trinket-with-an-arduino.html</link><description>&lt;p&gt;&lt;a href="https://learn.adafruit.com/introducing-pro-trinket/"&gt;Pro Trinket&lt;/a&gt; is
+a ATmega328 based board by &lt;a href="http://adafruit.com/"&gt;Adafruit&lt;/a&gt;. It's
+compatible with Arduino IDE and most of the code written for Arduino.
+It's small factor, cheap and comes with neat accessories like this
+&lt;a href="https://learn.adafruit.com/adafruit-pro-trinket-lipoly-slash-liion-backpack"&gt;LiPo backpack addon&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Pro Trinket is cheaper, smaller and consumes less power than a typical
+Arduino board because it lacks things like the
+&lt;a href="https://en.wikipedia.org/wiki/FTDI"&gt;FTDI&lt;/a&gt; chip used to communicate
+between the programmer and the board.&lt;/p&gt;
+&lt;p&gt;To program the Pro Trinket you need to have an external FTDI board or
+figure out how to make programming over USB work with Linux. I opted
+for the first option and abused …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Sat, 31 Oct 2015 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-10-31:/programming-pro-trinket-with-an-arduino.html</guid><category>arduino</category><category>trinket</category><category>programming</category><category>ftdi</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Downloading HDS Flash (f4m) video streams.</title><link>https://giorgos.sealabs.net/downloading-hds-flash-f4m-video-streams.html</link><description>&lt;p&gt;Some WebTV or other video streaming websites use a special Adobe
+(surprise, surprise) inspired protocol to stream their content. The
+special thing about this protocol is that the file is split into
+chunks which I guess is good if you want to jump on different points
+in the video or you have an unstable internet connection but really
+annoying if you just want to download the video and view it in a
+different player.&lt;/p&gt;
+&lt;p&gt;This protocol is called
+&lt;a href="https://en.wikipedia.org/wiki/Adaptive_bitrate_streaming#Adobe_Dynamic_Streaming_for_Flash"&gt;Abode Dynamic Streaming for Flash&lt;/a&gt;
+and usually the sites link to &lt;code&gt;f4m&lt;/code&gt; manifest files. From the
+&lt;a href="https://en.wikipedia.org/wiki/SWF"&gt;SWF Wikipedia Page&lt;/a&gt; we read get …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Wed, 21 Oct 2015 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-10-21:/downloading-hds-flash-f4m-video-streams.html</guid><category>Docker</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Fleet job to remove unused docker images</title><link>https://giorgos.sealabs.net/fleet-job-to-remove-unused-docker-images.html</link><description>&lt;p&gt;Engagement Engineering, the team that I'm part of at
+&lt;a href="https://www.mozilla.org"&gt;Mozilla&lt;/a&gt;, runs two &lt;a href="http://deis.io"&gt;Deis&lt;/a&gt;
+clusters on AWS to host important websites including www.mozilla.org.&lt;/p&gt;
+&lt;p&gt;&lt;a href="http://deis.io"&gt;Deis&lt;/a&gt; is a Heroku-inspired PaaS which utilizes
+&lt;a href="http://coreos.com/"&gt;CoreOS&lt;/a&gt; and &lt;a href="http://docker.io/"&gt;Docker&lt;/a&gt;. It's a
+great open-source project,
+&lt;a href="https://github.com/deis/deis"&gt;developed in the public&lt;/a&gt;, with a great
+Community and commercially backed by Engine Yard.&lt;/p&gt;
+&lt;p&gt;Apps on Deis run within Docker containers which run on CoreOS machines
+that form the Deis cluster. Each new release of your code, i.e. each
+new &lt;em&gt;deis pull&lt;/em&gt; or &lt;em&gt;git push&lt;/em&gt;, creates a new Docker image that is
+stored in the internal Deis Docker Registry and …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 13 Oct 2015 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-10-13:/fleet-job-to-remove-unused-docker-images.html</guid><category>Mozilla</category><category>Docker</category><category>ops</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>List the extensions of files under a directory</title><link>https://giorgos.sealabs.net/list-the-extensions-of-files-under-a-directory.html</link><description>&lt;p&gt;I want to list the extensions of filenames in a directory, sorted and unique.&lt;/p&gt;
+&lt;p&gt;First list all the files, leaving out directories using:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;find -type f .
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;Then use &lt;a href="https://en.wikipedia.org/wiki/AWK"&gt;awk&lt;/a&gt; to get the last three characters of each line, i.e. filename.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;find . -type f | awk &amp;#39;{ print substr( $0, length($0) - 3, 4) }&amp;#39;
+&lt;/pre&gt;&lt;/div&gt;
+
+
+&lt;p&gt;AWK's &lt;code&gt;substr&lt;/code&gt; function extracts four characters (last argument) of string $0 (first argument) starting at full lenth of the string minus three characters (second argument).&lt;/p&gt;
+&lt;p&gt;This will list the extensions from all files in the current directory and all directories below.&lt;/p&gt;
+&lt;p&gt;Now &lt;code&gt;sort&lt;/code&gt; and &lt;code&gt;uniq&lt;/code&gt; the output of …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Mon, 15 Jun 2015 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-06-15:/list-the-extensions-of-files-under-a-directory.html</guid><category>ops</category><category>mozilla-planet</category><category>ellak-planet</category></item><item><title>Don't hesitate to get a VPS to do your work.</title><link>https://giorgos.sealabs.net/dont-hesitate-to-get-a-vps-to-do-your-work.html</link><description>&lt;p&gt;This is not going to be one of these posts about how I got a super slim, slick machine or tablet and I moved all my work in the cloud. Fortunately this is old news and nobody talks about it. That being said I have been working on VPS machines for the last 6 months for some tasks.&lt;/p&gt;
+&lt;p&gt;When your bandwidth is not enough for what you've to do renting a VPS is a great option. I've seen speeds up to 200MB/s on the cheap &lt;a href="http://digitalocean.com/"&gt;DigitalOcean&lt;/a&gt; or &lt;a href="http://vultr.com/"&gt;Vultr&lt;/a&gt; VPS, with the later being faster most of the time. Want …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 05 May 2015 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-05-05:/dont-hesitate-to-get-a-vps-to-do-your-work.html</guid><category>mozilla-planet</category></item><item><title>Duplicity scp backend weirdness</title><link>https://giorgos.sealabs.net/duplicity-scp-backend-weirdness.html</link><description>&lt;p&gt;I'm a big fan of &lt;a href="http://duplicity.nongnu.org/"&gt;Duplicity&lt;/a&gt; and I use to backup my laptop to my office based server over &lt;code&gt;scp&lt;/code&gt; which in its turn encrypts everything with &lt;a href="https://en.wikipedia.org/wiki/EncFS"&gt;EncFS&lt;/a&gt; and syncs everything up to my &lt;a href="http://spideroak.com/"&gt;SpiderOak&lt;/a&gt; account. I was going under a typical maintenance today and I run &lt;code&gt;duplicity collection-status&lt;/code&gt; to see how many backup sets I have.&lt;/p&gt;
+&lt;p&gt;Surprisingly duplicity returned only one full backup set more than a year old and no other backup sets. After some digging I found that the returned backup set was indeed the only full set I had but besides that I had many incremental …&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">Giorgos</dc:creator><pubDate>Tue, 28 Apr 2015 00:00:00 +0300</pubDate><guid isPermaLink="false">tag:giorgos.sealabs.net,2015-04-28:/duplicity-scp-backend-weirdness.html</guid><category>ops</category><category>mozilla-planet</category><category>ellak-planet</category></item></channel></rss>

@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Systemd Unit to activate loopback devices before LVM // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Systemd Unit to activate loopback devices before LVM</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ops.html">ops</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>In a Debian server I'm using LVM to create a single logical volume from multiple
+different volumes. One of the volumes is a loop-back device which refers to a
+file in another filesystem.</p>
+<p>The loop-back device needs to be activated before the LVM service starts or the
+later will fail due to missing volumes. To do so a special systemd unit needs to
+be created which will not have the default dependencies of units and will get
+executed before <code>lvm2-activation-early service</code>.</p>
+<p>Systemd will set a number of dependencies for all units by default to bring the
+system into a usable state before starting most of the units. This behavior is
+controlled by DefaultDependencies flag. Leaving DefaultDependencies to its
+default True value creates a dependency loop which systemd will forcefully break
+to finish booting the system. Obviously this non-deterministic flow can result
+in different than desired execution order which in turn will fail the LVM volume
+activation.</p>
+<p>Setting DefaultDependencies to False will disable all but essential dependencies
+and will allow our unit to execute in time.
+<a href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html">Systemd manual</a>
+confirms that we can set the option to false:</p>
+<blockquote>
+<p>Generally, only services involved with early boot or late shutdown should set
+this option to false.</p>
+</blockquote>
+<p>The second is to execute before <code>lvm2-activation-early</code>. This is simply achieved
+by setting <code>Before=lvm2-activation-early</code>.</p>
+<p>The third and last step is to set the command to execute. In my case it's
+<code>/sbin/losetup /dev/loop0 /volume.img</code> as I want to create <code>/dev/loop0</code> from the
+file <code>/volume.img</code>. Set the process type to <code>oneshot</code> so systemd waits for the
+process to exit before it starts follow-up units. Again from the systemd manual</p>
+<blockquote>
+<p>Behavior of oneshot is similar to simple; however, it is expected that the
+process has to exit before systemd starts follow-up units.</p>
+</blockquote>
+<p>Place the unit file in <code>/etc/systemd/system</code> and in the next reboot the
+loop-back device should be available to LVM.</p>
+<p>Here's the final unit file:</p>
+<div class="highlight"><pre><span></span><span class="k">[Unit]</span>
+<span class="na">Description</span><span class="o">=</span><span class="s">Activate loop device</span>
+<span class="na">DefaultDependencies</span><span class="o">=</span><span class="s">no</span>
+<span class="na">After</span><span class="o">=</span><span class="s">systemd-udev-settle.service</span>
+<span class="na">Before</span><span class="o">=</span><span class="s">lvm2-activation-early.service</span>
+<span class="na">Wants</span><span class="o">=</span><span class="s">systemd-udev-settle.service</span>
+
+<span class="k">[Service]</span>
+<span class="na">ExecStart</span><span class="o">=</span><span class="s">/sbin/losetup /dev/loop0 /volume.img</span>
+<span class="na">Type</span><span class="o">=</span><span class="s">oneshot</span>
+
+<span class="k">[Install]</span>
+<span class="na">WantedBy</span><span class="o">=</span><span class="s">local-fs.target</span>
+</pre></div>
+
+
+<p>See also:
+ - Anthony's excellent <a href="http://www.anthonyldechiaro.com/blog/2010/12/19/lvm-loopback-how-to/">LVM Loopback How-To</a></p>
+            <a href="systemd-unit-to-activate-loopback-devices-before-lvm.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

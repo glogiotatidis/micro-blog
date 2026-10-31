@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Automating Podcast generation from SoundCloud // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Automating Podcast generation from SoundCloud</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                                <a class="post-category" href="tag/podcast.html">podcast</a>
+                        </p>
+                </header>
+            </section>
+            <p>There's this popular <a href="http://ellinofreneianet.gr">daily FM Radio show</a> in
+Greece which posts their shows on SoundCloud after broadcasting them. It's a
+good -albeit not great, just HTML5 audio is fine- way to listen the show on
+demand if you're on Desktop. The website is not mobile friendly and the whole
+embedded SoundCloud experience is sub-optimal. Let alone that you cannot just
+add the feed to your favorite podcast player to enjoy it.</p>
+<p>There's an
+<a href="https://itunes.apple.com/gr/podcast/%CE%B5%CE%BB%CE%BB%CE%B7%CE%BD%CE%BF%CF%86%CF%81%CE%AD%CE%BD%CE%B5%CE%B9%CE%B1/id443416137">RSS feed on iTunes</a> but
+it's manually updated and inevitably lags a day or two behind, depending on the
+availability of the maintainer.</p>
+<p>I decided to fix the problem myself and since this turned out to be a solution
+involving a bunch of interesting technologies I thought to write a blog post
+about it. If you only care about the podcast you
+can <a href="https://ellinofreneia.sealabs.net">find it here</a>.</p>
+<h2>Step 1: Extracting content from SoundCloud</h2>
+<p>The episodes are embedded in the official website but are hidden in SoundCloud.
+Probably there's a <code>hidden</code> attribute you can set to SoundCloud media. That
+explains why my first attempt to download the episodes
+using <a href="https://github.com/Miserlou/SoundScrape">SoundScrape</a> failed with the
+later complaining that it can't find any videos.</p>
+<p>Then I started examining SoundCloud's JS and JSON responses sent when you click
+the play button, with the ultimate goal to write a SoundCloud downloader. The
+service follows a typical authenticate-then-get unique auto-expiring link to S3,
+which it can be automated but it's not fun to do.</p>
+<p>While taking a break from parsing JSON responses it occurred to me
+that <a href="https://rg3.github.io/youtube-dl/">youtube-dl</a> despite it's very specific
+name it supports other websites too,
+actually
+<a href="https://rg3.github.io/youtube-dl/supportedsites.html">hundreds of them</a>.
+v
+Run youtube-dl against a URL with embedded SoundCloud audio and youtube-dl will
+find and download the best version of the audio file including the cover
+thumbnail!</p>
+<p>All I need now is simple python script to extract all URLs with embedded
+SoundCloud audio and feed it to youtube-dl as a list using the <code>--batch-file</code>
+argument.</p>
+<h2>Step 2: Generate the Podcast RSS</h2>
+<p>With all the mp3 files for the show downloaded, next step is to generate the
+Podcast RSS. <a href="https://pypi.python.org/pypi/feedgen/">FeedGen</a> is a simple
+pythonic library which builds RSS feeds, including extensions for podcasts and
+iTunes attributes.</p>
+<h2>Step 3: Serve the Podcast RSS</h2>
+<p>I serve all my personal websites using <a href="http://dokku.viewdocs.io/dokku/">Dokku</a>
+running on my VPS. I used a Debian based Docker image and installed Python2 and
+the needed python libraries for the feed generation. Also installed nginx-light
+to serve the content, both the RSS and the audio files.</p>
+<p>I originally used the <a href="https://github.com/amsehili/genRSS">genRSS</a> project to
+generate the RSS which complained about the Unicode characters in the mp3
+filenames when run from the Docker image. I fixed this by adding <code>en_US.UTF-8</code>
+to the supported locales and running <code>locale-gen</code> on image build.</p>
+<div class="highlight"><pre><span></span>RUN sed -i -e &#39;s/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/&#39; /etc/locale.gen &amp;&amp; \
+    locale-gen
+ENV LC_ALL en_US.UTF-8
+</pre></div>
+
+
+<p>The docker image default command runs <code>nginx</code> with a minimal nginx.conf.</p>
+<p>Dokku takes care of everything else, including getting certificates
+from <a href="http://letsencrypt.org/">LetsEncrypt</a>.</p>
+<h2>Step 4: Update the Feed</h2>
+<p>Cron runs a command to update the feed daily from Mon-Fri every 5 minutes from
+the moment the show ends and up to an hour after. The show producers are very
+consistent on uploading the show on time so that seems to just work. To be on
+the safe side I added another run two hours after the show ends.</p>
+<p>The cron runs on the host, using <code>dokku run</code>. The podcast and the audio files
+are stored in a Docker volume and therefore both the web serving process and the
+cron job can access this persistent storage at the same time.</p>
+<p>Youtube-dl is smart enough to not re-download content which exists, so running
+the command multiple times does not hammer the servers.</p>
+<h2>Step 5: Monitoring</h2>
+<p>For an automation to be perfect it must be monitored. As with all my websites, I
+setup a <a href="http://synthetics.newrelic.com/">NewRelic Synthetics</a> monitor which
+monitors the feed serving and that the content of the feed appears valid by
+looking for "pubDate" text.</p>
+<p>To monitor the cronjob cURL a <a href="http://healthchecks.io/">healthchecks.io</a>
+provided URL at the very end of the bash script that co-ordinates the fetching
+and building of the feed. Make sure
+to
+<a href="https://www.gnu.org/software/bash/manual/html_node/The-Set-Builtin.html"><code>set -e</code></a> your
+bash scripts so they exit after the first failed command. Not setting <code>-e</code> will
+always call cURL even if a step fails.</p>
+<p>Actually use those two tools so much, I maintain two related
+projects <a href="https://github.com/glogiotatidis/neres/">NeReS</a>
+and <a href="monitoring-python-cron-jobs-with-babis.html">Babis</a>.</p>
+<p>Fun fact: It's the second time I build a podcast for this show. First one was
+around 2008.</p>
+<h2>Links:</h2>
+<ul>
+<li>Podcast URL <a href="https://ellinofreneia.sealabs.net">https://ellinofreneia.sealabs.net</a></li>
+<li>Show's Website <a href="https://www.ellinofreneianet.gr">https://www.ellinofreneianet.gr</a></li>
+<li><a href="https://github.com/glogiotatidis/ellinofreneia-podcast/">GitHub repo</a></li>
+</ul>
+            <a href="automating-podcast-generation-from-soundcloud.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

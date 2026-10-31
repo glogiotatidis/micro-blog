@@ -29,7 +29,7 @@ jobs:
         run: pip install pyyaml
       - name: build
         env:
-          SITE_URL: ${{ vars.SITE_URL || 'https://glogiotatidis.github.io/mini-blog/' }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://glogiotatidis.github.io/micro-blog/' }}
         run: python3 build.py
       - name: commit generated files
         run: |

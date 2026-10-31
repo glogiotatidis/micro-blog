@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="../feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>travis tag // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../theme/css/pure.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="../images/avatar.png">
+                            <h1 class="brand-main"><a href="../index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="../feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <!-- A wrapper for all the blog posts -->
+            <div class="posts">
+                <h1 class="content-subhead">
+Posts tagged 'travis'                </h1>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../getting-advantage-of-docker-image-cache-on-113.html">Getting advantage of docker image cache on 1.13</a></h3>
+                            <p class="post-meta"><p>Last week's release of Docker (v1.13) added the <code>cache-from</code> build flag which
+allows the use of local images as build cache and solves the
+layer <a href="../docker-cache-on-travis-and-docker-112.html">caching issue created by Content Addressability</a>
+as I've blogged before.</p>
+<p>To use the new feature and take advantage of the caching for faster image builds
+first pull the image that you want to base you build upon and then build using
+<code>--cache-from</code></p>
+<p>For example:</p>
+<div class="highlight"><pre><span></span>docker pull myimage:v1.0
+docker build --cache-from myimage:v1.0 -t myimage:v1.1 .
+</pre></div>
+
+
+<p>You should always keep in mind though that you must fully trust the registry
+you're …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Mon 23 January 2017
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../docker-cache-on-travis-and-docker-112.html">Docker cache on Travis and Docker 1.12</a></h3>
+                            <p class="post-meta"><blockquote>
+<h4>Edits</h4>
+<p><strong>2016-09-12</strong> Edited to prevent caching of builds in pull requests.<br/>
+<strong>2017-07-07</strong> Edited to point to exact git commit b/c we don't use Travis for
+Snippets Service anymore.</p>
+</blockquote>
+<p>I blogged before about
+<a href="../build-and-test-against-docker-images-in-travis.html">building Docker images on Travis</a> and suggested
+uploading images after successful test runs to Docker Hub and use them as Cache
+after downloading them in next Travis runs.</p>
+<p>Travis upgraded recently to Docker version 1.12 (from 1.9) and since version
+1.10 Docker features Content Addressability for layers. This change breaks
+caching and we need to implement a workaround using Travis cache.</p>
+<p>Changes need to …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Thu 01 September 2016
+                            </p>
+                        </header>
+                    </section>
+                    <section class="post">
+                        <header class="post-header">
+                            <h3><a class="post-title" href="../build-and-test-against-docker-images-in-travis.html">Build and Test against Docker Images in Travis</a></h3>
+                            <p class="post-meta"><p>The road towards the absolute CI/CD pipeline goes through building Docker images
+and deploying them to production. The code included in the images gets unit
+tested, both locally during development and after merging in master branch using
+<a href="https://travis-ci.org">Travis</a>.</p>
+<p>But Travis builds its own environment to run the tests on which could be
+different from the environment of the docker image. For example Travis may be
+running tests in a Debian based VM with libjpeg version X and our to-be-deployed
+docker image runs code on-top of Alpine with libjpeg version Y.</p>
+<p>To ensure that the image to be deployed to …</p></p>
+                            <p class="post-meta">
+                                in <a href="../category/software.html">software</a> &middot; Fri 17 June 2016
+                            </p>
+                        </header>
+                    </section>
+<div class="pagination-wrapper content-subhead">
+</div><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

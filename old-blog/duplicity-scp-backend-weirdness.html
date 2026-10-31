@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Duplicity scp backend weirdness // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Duplicity scp backend weirdness</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/ops.html">ops</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>I'm a big fan of <a href="http://duplicity.nongnu.org/">Duplicity</a> and I use to backup my laptop to my office based server over <code>scp</code> which in its turn encrypts everything with <a href="https://en.wikipedia.org/wiki/EncFS">EncFS</a> and syncs everything up to my <a href="http://spideroak.com/">SpiderOak</a> account. I was going under a typical maintenance today and I run <code>duplicity collection-status</code> to see how many backup sets I have.</p>
+<p>Surprisingly duplicity returned only one full backup set more than a year old and no other backup sets. After some digging I found that the returned backup set was indeed the only full set I had but besides that I had many incremental sets. Re-running the collection-status command returns some of the incremental backup sets and running it for a third time I get different -smaller- number of sets. My initial thought was that duplicity broke due to the large number of incremental sets or maybe EncFS cannot handle that many files in the same directory.</p>
+<p>Fortunately duplicity has a very verbose log setting <code>-v 9</code> which returned interesting SSH logs</p>
+<div class="highlight"><pre><span></span>ssh: [chan 1] Sesch channel 1 request ok
+ssh: [chan 1] EOF received (1)
+ssh: [chan 1] EOF sent (1)
+</pre></div>
+
+
+<p>I tried the <code>--timeout</code> flag to increase timeout with no luck. Finally running duplicity with the <code>sftp</code> backend made the problem go away. All my backup sets were available and nothing strange in the SSH logs. I do not have any hard facts on why I chose to go with <code>scp</code> backend in the first place but it appears to be less stable compared to <code>sftp</code>, albeit this is the first time I run into problems with it.</p>
+            <a href="duplicity-scp-backend-weirdness.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

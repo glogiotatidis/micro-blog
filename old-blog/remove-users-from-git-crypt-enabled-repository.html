@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Remove users from git-crypt enabled repository // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Remove users from git-crypt enabled repository</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/ops.html">ops</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p><a href="https://www.agwa.name/projects/git-crypt/">Git crypt</a> is a neat git extension
+to encrypt some files - if not all - in a git repository. Integrates nicely with
+git using filters and it's use is completely transparent once you have unlocked
+a repository.</p>
+<p>Using git-crypt you can still share a repository in public and maintain a set of
+files with secrets that are accessible to a limited number of users. Especially
+useful for open source projects.</p>
+<p>At some point maybe you'll need to remove one of the users who have access to
+the encrypted files. Git-crypt does not provide a command to remove users (yet)
+because it's
+<a href="https://github.com/AGWA/git-crypt/issues/47#issuecomment-90788733">complicated to be done right while preserving history</a>.</p>
+<p>Until this issue is fixed, I put together a script to automate the procedure.
+The script will de-initialize git-crypt from the repository, completely remove
+the git-crypt keys and users. Then it will re-encrypt the repository and re-add
+all the keys (users) expect the one requested to be removed.</p>
+<p>This is obviously a work-around and a proper solution with multiple git-crypt
+key versions is preferred but still it gets the work done. The solution was
+inspired by
+<a href="https://github.com/AGWA/git-crypt/issues/47#issuecomment-212734882">comments</a>
+in the corresponding issue.</p>
+<p>Grab with the <a href="https://gist.github.com/glogiotatidis/e0ab45ed5575a9d7973390dace0552b0">script and documentation</a> from GitHub.</p>
+            <a href="remove-users-from-git-crypt-enabled-repository.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

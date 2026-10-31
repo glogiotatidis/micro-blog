@@ -3,22 +3,23 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About · mini-blog</title>
+  <title>About · micro-blog</title>
   <meta name="description" content="About Giorgos Logiotatidis and this activity log." />
   <link rel="stylesheet" href="./style.css" />
-  <link rel="alternate" type="application/rss+xml" title="mini-blog" href="./rss.xml" />
+  <link rel="alternate" type="application/rss+xml" title="micro-blog" href="./rss.xml" />
 </head>
 <body>
   <header class="site-header">
     <div class="container">
       <div class="header-row">
         <div>
-          <h1 class="site-title"><a href="./index.html">mini-blog</a></h1>
+          <h1 class="site-title"><a href="./index.html">micro-blog</a></h1>
           <p class="site-tagline">personal activity log · Giorgos Logiotatidis</p>
         </div>
         <nav class="site-nav">
           <a href="./index.html">timeline</a>
           <a href="./about.html" aria-current="page">about</a>
+          <a href="./old-blog/">old blog</a>
           <a href="https://github.com/glogiotatidis" target="_blank" rel="noopener">github</a>
         </nav>
       </div>
@@ -35,13 +36,14 @@
       </p>
       <p>
         sealabs.net has been my corner of the web since 1998. The blog itself is
-        a zero-build static site: a single <code>posts.jsonl</code> file plus a
-        few lines of vanilla JavaScript, hosted on GitHub Pages. Appending one
-        JSON line publishes a new entry.
+        a plain static site: Markdown posts with frontmatter compiled to JSON by
+        a small Python script, rendered with vanilla JavaScript, hosted on GitHub
+        Pages. Older posts live under "old blog".
       </p>
       <h2>Links</h2>
       <ul class="links">
         <li><a href="https://github.com/glogiotatidis" target="_blank" rel="noopener">GitHub — glogiotatidis</a></li>
+        <li><a href="./old-blog/">old blog content</a></li>
         <li><a href="https://sealabs.net" target="_blank" rel="noopener">sealabs.net</a></li>
       </ul>
     </article>

@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Takis - A util that blocks until a port is open. // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Takis - A util that blocks until a port is open.</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/ops.html">ops</a>
+                                <a class="post-category" href="tag/homebrewed-web.html">homebrewed-web</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>Over at Mozilla's Engagement Engineering we use Docker to ship our websites. We
+build the docker images in CI and then we run tests against them. Our tests
+usually need a database or a cache server which you can get it running
+simply with a single command:</p>
+<div class="highlight"><pre><span></span>docker run -d mariadb
+</pre></div>
+
+
+<p>The problem is that this container will take some time to initialize and become
+available to accept connections. Depending on what your test and how you run
+your tests this delay can cause a test failure to due database connection
+timeouts.</p>
+<p>We used to wait on executing our tests with <code>sleep</code> command but that -besides
+being an ugly hack- will not always work. For example you may set sleep timeout
+to 10 seconds and due to CI server load database initialization takes 11
+seconds. And nobody wants a non-deterministic test suite.</p>
+<p>Meet <a href="https://github.com/glogiotatidis/takis/">Takis</a>. Takis checks once per
+second if a host:port is open. Once it's open, it just returns. It blocks the
+execution of your pipeline until services become available. No messages or other
+output to get in the way of your build logs. No complicated configuration
+either: It reads <code>CHECK_PORT</code> and optionally <code>CHECK_HOST</code> environment variables,
+waits and eventually returns.</p>
+<p>Takis is build using Go and it's fully statically linked as Adriaan explains in
+this
+<a href="http://blog.adriaandejonge.eu/2014/07/05/xebia-blog-create-smallest-possible.html">intriguing read</a>.
+You can download it and directly use it in your scripts</p>
+<div class="highlight"><pre><span></span>~$ wget https://github.com/glogiotatidis/takis/raw/master/bin/takis
+~$ chmod +x takis
+~$ <span class="nv">CHECK_PORT</span><span class="o">=</span><span class="m">3306</span> ./takis
+</pre></div>
+
+
+<p>or use it's super small Docker image</p>
+<div class="highlight"><pre><span></span>docker run -e <span class="nv">CHECK_PORT</span><span class="o">=</span><span class="m">3306</span> -e <span class="nv">CHECK_HOST</span><span class="o">=</span>database.example.com giorgos/takis
+</pre></div>
+
+
+<p>For example here's how we use it to build
+<a href="https://github.com/mozilla/snippets-service">Snippets Service</a> in TravisCI:</p>
+<div class="highlight"><pre><span></span>script:
+  - docker run -d --name mariadb -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=snippets mariadb:10.0
+  # Wait mariadb to initialize.
+  - docker run --link mariadb:db -e CHECK_PORT=3306 -e CHECK_HOST=db giorgos/takis
+  - docker run --env-file .env --link mariadb:db mozorg/snippets:latest coverage run ./manage.py test
+</pre></div>
+
+
+<p>My colleague <a href="https://mozillians.org/en-US/u/pmac/">Paul</a> also build
+<a href="https://github.com/pmclanahan/urlwait/">urlwait</a>, a Python utility and library
+with similar functionality that can be nicely added to your docker-compose
+workflow to fight the same problem. Neat!</p>
+            <a href="takis-a-util-that-blocks-until-a-port-is-open.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Static site hosting on Dokku and Deis // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Static site hosting on Dokku and Deis</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/ops.html">ops</a>
+                                <a class="post-category" href="tag/homebrewed-web.html">homebrewed-web</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p><a href="http://deis.io/">Deis</a> and <a href="http://dokku.viewdocs.io/">Dokku</a>, the open source
+Heroku-like PaaS, can be used for hosting static sites too. Since they both
+support Dockerfile based deployments all we need is an Docker Image with Nginx.</p>
+<p>I created
+<a href="https://hub.docker.com/r/giorgos/dokku-static-site/">giorgos/dokku-static-site</a>
+which uses the ONBUILD instruction. To use it create a Dockerfile at the root
+directory of your static site with only one line:</p>
+<div class="highlight"><pre><span></span>FROM giorgos/dokku-static-site
+</pre></div>
+
+
+<p>and then place all your files under the <code>html</code> directory. If moving your website
+files to another directory isn't in your plans, you can alternatively create a
+symbolic link</p>
+<div class="highlight"><pre><span></span>ln -s . html
+</pre></div>
+
+
+<p>Then push to your Deis / Dokku server as usual and it will download the image
+and do the rest.</p>
+<div class="highlight"><pre><span></span>git push dokku master
+</pre></div>
+
+
+<p>The image works nicely with
+<a href="https://github.com/dokku/dokku-letsencrypt">Dokku's letencrypt</a> plugin too, no
+need to worry about ports or custom Nginx configurations.</p>
+<p>giorgos/dokku-static-site is based on
+<a href="https://hub.docker.com/_/debian/">debian:stable</a> and a cron job will trigger a
+rebuild every hour to always be up-to-date with latest security patches.</p>
+<p>You can find more information about
+<a href="http://docs.deis.io/en/latest/using_deis/using-dockerfiles/">Deis Dockerfile Deployments</a>
+and
+<a href="http://dokku.viewdocs.io/dokku/deployment/dockerfiles/">Dokku Dockerfile Deployments</a>
+in each project's documentation.</p>
+            <a href="static-site-hosting-on-dokku-and-deis.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

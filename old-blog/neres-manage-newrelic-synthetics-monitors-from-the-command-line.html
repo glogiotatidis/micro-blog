@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>NeReS: Manage NewRelic Synthetics Monitors from the command line. // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>NeReS: Manage NewRelic Synthetics Monitors from the command line.</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>NewRelic <a href="http://synthetics.newrelic.com/">Synthetics</a> is a service to monitor
+websites that comes free of charge with all accounts and offers a satisfying set
+of features:</p>
+<ul>
+<li>Website up-time monitoring from multiple locations around the world</li>
+<li>Content validation</li>
+<li>SSL certificate validation</li>
+<li>Email alerting on error</li>
+</ul>
+<p>I developed <a href="https://pypi.python.org/pypi/neres/0.4.0">NeReS</a>, an (unofficial)
+cli tool to manage monitors from the command line.</p>
+<p>NeReS can <em>list</em> the current account monitors, <em>add</em> new, <em>edit</em> or <em>delete</em>
+existing ones. It can also return the information in raw JSON format so you can
+further process and automate your monitor generation using tools
+like <a href="https://stedolan.github.io/jq/"><code>jq</code></a>.</p>
+<p>Using NeReS you can automate the generation off monitors based on the number of
+deployed apps. Or you can change the email that receives the alert emails with
+one bash loop.</p>
+<p>NeReS mimics the user actions in the Web Console so it works with all accounts,
+free and pro.</p>
+<p>Detailed documentation and usage examples in the projects
+repo <a href="https://github.com/glogiotatidis/neres/">glogiotatidis/neres</a> on Github.</p>
+<h2>Examples</h2>
+<ul>
+<li>
+<p>List all monitors:</p>
+<p><code>$ neres list-monitors</code></p>
+</li>
+<li>
+<p>Add monitor with 10 minute check frequency and SSL validation:</p>
+<p><code>$ neres add-monitor monitorName https://example.com --frequency 10 --verify-ssl</code></p>
+</li>
+<li>
+<p>Get monitor details:</p>
+<p><code>$ neres get-monitor de310b69-3195-435e-b1ef-3a0af67499de</code></p>
+</li>
+<li>
+<p>More examples in NeReS' <a href="https://github.com/glogiotatidis/neres/blob/master/README.rst">ReadMe</a>.</p>
+</li>
+</ul>
+<h2>Links</h2>
+<ul>
+<li><a href="https://pypi.python.org/pypi/neres/0.4.0">PyPi</a> NeReS package</li>
+<li><a href="https://github.com/glogiotatidis/neres/">Github</a> GitHub</li>
+</ul>
+            <a href="neres-manage-newrelic-synthetics-monitors-from-the-command-line.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

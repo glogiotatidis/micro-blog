@@ -1,4 +1,4 @@
-# mini-blog
+# micro-blog
 
 A personal activity log by Giorgos Logiotatidis — things I build, in order.
 

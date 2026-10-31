@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Taco Bell Parallel Programming // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Taco Bell Parallel Programming</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/mysql.html">mysql</a>
+                                <a class="post-category" href="tag/django.html">django</a>
+                                <a class="post-category" href="tag/parallel.html">parallel</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>While working on migrating support.mozilla.org away from
+<a href="https://github.com/mozilla/kitsune">Kitsune</a> (which is a great community
+support platform that needs love, remember that internet) I needed to convert
+about 4M database rows of a custom, Markdown inspired, format to HTML.</p>
+<p>The challenge of the task is that it needs to happen as fast as possible so we
+can dump the database, convert the data and load the database onto the new
+platform with the minimum possible time between the first and the last step.</p>
+<p>I started a fresh MySQL container and started hacking:</p>
+<h2>Load the database dump</h2>
+<p>Kitsune's database weights about 35GiB so creating and loading the dump is a
+lengthy procedure. I used some tricks taken from
+<a href="http://serverfault.com/questions/321805/best-mysql-cache-settings-for-8gb-ram-dedicated-mysql-server-using-only-innodb">different</a>
+<a href="http://dba.stackexchange.com/questions/12611/is-it-safe-to-use-innodb-flush-log-at-trx-commit-2">places</a> with most notable ones:</p>
+<ul>
+<li>
+<p>Set <code>innodb_flush_log_at_trx_commit = 2</code> for more speed. This should not be
+    used in production as it may break ACID compliance but for my use case it's
+    fine.</p>
+</li>
+<li>
+<p>Set <code>innodb_write_io_threads = 16</code></p>
+</li>
+<li>
+<p>Set <code>innodb_buffer_pool_size=16G</code> and <code>innodb_log_file_size=4G</code>. I read that
+  the <code>innodb_log_file_size</code> is recommended to be 1/4th of
+  <code>innodb_buffer_pool_size</code> and I set the later based on my available memory.</p>
+</li>
+</ul>
+<p>Loading the database dump takes about 60 minutes. I'm pretty sure there's room
+for improvement there.</p>
+<p>Extra tip: When dumping such huge databases from production websites make sure
+to use a replica host and <code>mysqldump</code>'s <code>--single-transaction</code> flag to avoid
+locking the database.</p>
+<h2>Create a place to store the processed data</h2>
+<p>Kitsune being a Django project I created extra fields named <code>content_html</code> in the
+Models with markdown content, generated the migrations and run them against the
+db.</p>
+<h2>Process the data</h2>
+<p>An AWS m4.2xl gives 8 cores at my disposal and 32GiB of memory, of which 16 I
+allocated to MySQL earlier.</p>
+<p>I started with a basic single core solution::</p>
+<div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">question</span> <span class="ow">in</span> <span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+    <span class="n">question</span><span class="o">.</span><span class="n">content_html</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">wiki_2_html</span><span class="p">(</span><span class="n">question</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">question</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+
+
+<p>which obviously does the job but it's super slow.</p>
+<p>Transactions take a fair amount of time, what if we could bundle multiple saves
+into one transaction?</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">chunks</span><span class="p">(</span><span class="n">count</span><span class="p">,</span> <span class="n">nn</span><span class="o">=</span><span class="mi">500</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Yield successive n-sized chunks from l.&quot;&quot;&quot;</span>
+    <span class="n">offset</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">offset</span><span class="o">+</span><span class="n">nn</span><span class="p">,</span> <span class="n">count</span><span class="p">))</span>
+        <span class="n">offset</span> <span class="o">+=</span> <span class="n">nn</span>
+        <span class="k">if</span> <span class="n">offset</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">:</span>
+            <span class="k">break</span>
+
+<span class="k">for</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+    <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+      <span class="k">for</span> <span class="n">question</span> <span class="ow">in</span> <span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">limit</span><span class="p">[</span><span class="n">low</span><span class="p">:</span><span class="n">high</span><span class="p">]:</span>
+          <span class="n">question</span><span class="o">.</span><span class="n">content_html</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">wiki_2_html</span><span class="p">(</span><span class="n">question</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+          <span class="n">question</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+
+
+<p>This is getting better. Increasing the chunk size to 20000 items in the cost of
+more RAM used produces faster results. Anything above this value seems to
+require about the same time to complete.</p>
+<p>Tried <a href="taco-bell-parallel-programming.html">pypy</a> and I didn't get better results so I defaulted to CPython.</p>
+<p>Let's add some more cores into the mix using Python's
+<a href="https://docs.python.org/2/library/multiprocessing.html">multiprocessing</a>
+library.</p>
+<p>I created a Pool with 7 processes (always leave one core outside the Pool so the
+system remains responsive) and used <code>apply_async</code> to generate the commands to
+run by the Pool.</p>
+<div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">Question</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="n">number_of_rows</span> <span class="o">=</span> <span class="n">it</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="n">pool</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="p">[</span><span class="n">pool</span><span class="o">.</span><span class="n">apply_async</span><span class="p">(</span><span class="n">process_chunk</span><span class="p">),</span> <span class="p">(</span><span class="n">chunk</span><span class="p">,),</span> <span class="n">callback</span><span class="o">=</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">)</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">(</span><span class="n">it</span><span class="p">)]</span>
+
+<span class="n">sum_results</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">sum_results</span> <span class="o">&lt;</span> <span class="n">number_of_rows</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s1">&#39;Progress: {}/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sum_results</span><span class="p">,</span> <span class="n">number_of_rows</span><span class="p">)</span>
+    <span class="n">sum_results</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Function <code>process_chunk</code> will process, save and return the number of rows
+processed. Then <code>apply_async</code> will append this number to <code>results</code> which is used
+in the <code>while</code> loop to give me an overview of what's happening while I'm
+waiting.</p>
+<p>So far so good, this is significantly faster. It took some tries before getting
+this right. Two things to remember when dealing with multiprocess and Django
+are:</p>
+<ul>
+<li>
+<p><code>./manage.py shell</code> won't work. I don't know why but I went ahead and wrote
+    a standalone python script, imported django and run <code>django.setup()</code>.</p>
+</li>
+<li>
+<p>When a process forks, Django's database connection which was already
+    created by that time, needs to be cleared out and get re-created for every
+    process. First thing <code>process_chunk</code> does is <code>db.connections.close_all()</code>.
+    Django will take care re-creating when needed.</p>
+</li>
+</ul>
+<p>OK I'm good to hit the road -I thought- and I launched the process with all the
+rows that needed parsing. As the time goes by I see the memory usage to increase
+dramatically and eventually the kernel would kill my process to free up memory.</p>
+<p>It seems that the queries would take too much memory. I set the Pool to shutdown
+and start a new process on every new chunk with <code>maxtasksperchild=1</code> which
+helped a bit but again, the farther in the process the more the memory usage. I
+tried to debug the issue with different Django queries and profiling (good luck
+with that on a multiprocess program) and I failed. Eventually I needed to figure
+out a solution before it's too late, so back to the drawing board.</p>
+<h2>Process the data, take two</h2>
+<p>I read this interesting blog post the other day named
+<a href="http://widgetsandshit.com/teddziuba/2010/10/taco-bell-programming.html">Taco Bell Programming</a>
+where Ted is claiming that many times you can achieve the desired functionality
+just by rearranging the Unix tool set, much like Taco Bell is producing its menu
+by rearranging basic ingredients.</p>
+<p>What you win with Taco Bell Programming is battle-tested tools and throughout
+documentation which should save you time from actual coding and time debugging
+problems already solved.</p>
+<p>I took a step back and re-thought by problem. The single core solution was
+working just fine and had no memory issues. What if I could find a program to
+paralellize multiple runs? And that tool (obviously) exists, it's
+<a href="https://www.gnu.org/software/parallel/">GNU Parallel</a>.</p>
+<p>In the true spirit of other GNU tools, Parallel has a gazillion command line
+arguments and can do a ton of things related to parallelizing the run of a list
+of commands.</p>
+<p>I mention just the most important to me at the moment:</p>
+<ol>
+<li>Read from command line a list of commands</li>
+<li>Show progress and provide ETA</li>
+<li>Limit the run to a number of cores</li>
+<li>Retry failed jobs, resume runs and book overall keeping.</li>
+<li>Send jobs to other machines (I wish I had the time to test that, amazing)</li>
+</ol>
+<h3>Prepare the input to Parallel</h3>
+<p>I reverted to the original one core python script and refactored it a bit so I
+can call it using <code>python -c</code>. I also removed the chunk generation code since
+I'll do that elsewhere</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_to_html</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">from_field</span><span class="p">,</span> <span class="n">to_field</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+           <span class="nb">setattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">to_field</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">wiki_to_html</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">from_field</span><span class="p">)))</span>
+           <span class="n">p</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Now to process all questions I can call this thing using</p>
+<div class="highlight"><pre><span></span>$ <span class="nb">echo</span> <span class="s2">&quot;import wikitohtml; it = Question.objects.all(); wikitohtml.parse_to_html(it, &#39;content&#39;, &#39;content_html&#39;)&quot;</span>  <span class="p">|</span> python -
+</pre></div>
+
+
+<p>Then I wrote a small python script to generate the chunks and print out commands to be later used by Parallel</p>
+<div class="highlight"><pre><span></span><span class="n">CMD</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;echo &quot;import wikitohtml; it = wikitohtml.Question.objects.filter(id__gte={from_value}, id__lt={to_value}); wikitohtml.parse_to_html(it, &#39;content&#39;, &#39;content_html&#39;)&quot; | python - &gt; /dev/null&#39;&#39;&#39;</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1200000</span><span class="p">,</span> <span class="mi">10000</span><span class="p">):</span>
+    <span class="k">print</span> <span class="n">CMD</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">from_value</span><span class="o">=</span><span class="n">i</span><span class="p">,</span> <span class="n">to_value</span><span class="o">=</span><span class="n">i</span><span class="o">+</span><span class="n">step</span><span class="p">)</span>
+</pre></div>
+
+
+<p>I wouldn't be surprised if Parallel can do the chunking itself but in this case
+it's easier for me to fine tune it using Python.</p>
+<p>Now I can process all questions in parallel using</p>
+<div class="highlight"><pre><span></span>$ python generate-cmds.py <span class="p">|</span> parallel -j <span class="m">7</span> --eta --joblog joblog
+</pre></div>
+
+
+<p>So everything is working now in parallel and the memory leak is gone!</p>
+<p>But I'm not done yet.</p>
+<h2>Deadlocks</h2>
+<p>I left the script running for half an hour and then I started seeing MySQL
+aborted transactions that failed to grab a lock. OK that's should be an easy fix
+by increasing the wait lock time with <code>SET innodb_lock_wait_timeout = 5000;</code> (up
+from 50). Later I added <code>--retries 3</code> in Parallel to make sure that if anything
+failed it would get retried.</p>
+<p>That actually made things worse as it introduced everyone's favorite issue in
+parallel programming, deadlocks. I reverted the MySQL change and looked deeper.
+Being unfamiliar with Kitsune's code I was not aware that the <code>model.save()</code>
+methods are doing a number of different things, including saving other objects
+as well, e.g. <code>Answer.save()</code> also calls <code>Question.save()</code>.</p>
+<p>Since I'm only processing one field and save the result into another field which
+is unrelated to everything else all the magic that happens in <code>save()</code> can be
+skipped. Besides dealing with the deadlock this can actually get us a speed
+increase for free.</p>
+<p>I refactored the python code to use Django's
+<a href="https://docs.djangoproject.com/en/1.10/ref/models/querysets/#django.db.models.query.QuerySet.update"><code>update()</code></a>
+which directly hits the database and does not go through <code>save()</code>.</p>
+<div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_to_html</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="n">from_field</span><span class="p">,</span> <span class="n">to_field</span><span class="p">,</span> <span class="n">id_field</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">atomic</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">it</span><span class="p">:</span>
+           <span class="n">it</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">id_field</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">id_field</span><span class="p">)})</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">to_field</span><span class="p">:</span> <span class="n">parser</span><span class="o">.</span><span class="n">wiki_to_html</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">from_field</span><span class="p">))})</span>
+</pre></div>
+
+
+<p>Everything works and indeed <code>update()</code> did increase things a lot and solved the
+deadlock issue. The cores are 100% utilized which means that throwing more CPU
+power into the problem would buy more speed. The processing of all 4 million
+rows takes now about 30 minutes, down from many many hours.</p>
+<p>Magic!</p>
+            <a href="taco-bell-parallel-programming.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>

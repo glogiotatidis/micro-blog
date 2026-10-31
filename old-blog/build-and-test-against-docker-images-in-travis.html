@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Read at G's, A personal blog from Giorgos Logiotatidis.">
+
+        <link rel="alternate" href="feeds/all.rss" type="application/rss+xml" title="Read at G's Full RSS Feed"/>
+
+        <title>Build and Test against Docker Images in Travis // Read at G's // A personal blog from Giorgos Logiotatidis.</title>
+
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.3.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="theme/css/pure.css">
+    <link rel="stylesheet" href="theme/css/pygments.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fitvids/1.0.1/jquery.fitvids.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $(".content").fitVids();
+        });
+    </script>
+</head>
+
+<body>
+    <div class="pure-g-r" id="layout">
+        <div class="sidebar pure-u">
+            <div class="cover-img" >
+                <div class="cover-body">
+                    <header class="header">
+                        <hgroup>
+                            <img class="avatar" src="images/avatar.png">
+                            <h1 class="brand-main"><a href="index.html">Read at G's</a></h1>
+                            <p class="tagline">A personal blog from Giorgos Logiotatidis.</p>
+                            <p class="tagline">Software Engineer. Mozillian. Web Brewer. Maker. Free Software Advocate.</p>
+                                <p class="social">
+                                    <a href="https://github.com/glogiotatidis/">
+                                        <i class="fa fa-github fa-3x"></i>
+                                    </a>
+                                    <a href="feeds/all.rss">
+                                        <i class="fa fa-rss-square fa-3x"></i>
+                                    </a>
+                                </p>
+                        </hgroup>
+                    </header>
+                </div>
+            </div>
+        </div>
+    <div class="pure-u">
+        <div class="content">
+            <section class="post">
+                <header class="post-header">
+                    <h1>Build and Test against Docker Images in Travis</h1>
+                        <p class="post-meta">
+                            // under                                 <a class="post-category" href="tag/travis.html">travis</a>
+                                <a class="post-category" href="tag/mozilla-planet.html">mozilla-planet</a>
+                                <a class="post-category" href="tag/ellak-planet.html">ellak-planet</a>
+                        </p>
+                </header>
+            </section>
+            <p>The road towards the absolute CI/CD pipeline goes through building Docker images
+and deploying them to production. The code included in the images gets unit
+tested, both locally during development and after merging in master branch using
+<a href="https://travis-ci.org">Travis</a>.</p>
+<p>But Travis builds its own environment to run the tests on which could be
+different from the environment of the docker image. For example Travis may be
+running tests in a Debian based VM with libjpeg version X and our to-be-deployed
+docker image runs code on-top of Alpine with libjpeg version Y.</p>
+<p>To ensure that the image to be deployed to production is OK, we need to run the
+tests inside that Docker image. That still possible with Travis with only a few
+changes to <code>.travis.yml</code>:</p>
+<h2>Sudo is required</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">sudo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">required</span>
+</pre></div>
+
+
+<p>Start by requesting to run tests in a VM instead of in a container.</p>
+<h2>Request Docker service:</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">services</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker</span>
+</pre></div>
+
+
+<p>The VM must run the Docker daemon.</p>
+<h2>Add TRAVIS_COMMIT to Dockerfile (Optional)</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">before_install</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker --version</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">echo &quot;ENV GIT_SHA ${TRAVIS_COMMIT}&quot; &gt;&gt; Dockerfile</span>
+</pre></div>
+
+
+<p>It's very useful to export the git SHA of HEAD as a Docker environment variable.
+This way you can always identify the code included, even if you have <code>.git</code>
+directory in <code>.dockerignore</code> to reduce size of the image.</p>
+<p>The resulting docker image gets also tagged with the same SHA for easier
+identification.</p>
+<h2>Build the image</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">install</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker pull ${DOCKER_REPOSITORY}:last_successful_build || true</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker pull ${DOCKER_REPOSITORY}:${TRAVIS_COMMIT} || true</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker build -t ${DOCKER_REPOSITORY}:${TRAVIS_COMMIT} --pull=true .</span>
+</pre></div>
+
+
+<p>Instead of pip installing packages, override the <code>install</code> step to build the
+Docker image.</p>
+<p>Start by pulling previously built images from the Docker Hub. Remember that
+Travis will run each job in a isolate VMs therefore there is no Docker cache. By
+pulling previously built images cache gets seeded.</p>
+<p>Travis' built-in cache functionality can also be used, but I find it more
+convenient to push to the Hub. Production will later pull from there and if
+debug is needed I can pull the same image locally too.</p>
+<p>Each <code>docker pull</code> is followed by a <code>|| true</code> which translates to "If the Docker
+Hub doesn't have this repository or tag it's OK, don't stop the build".</p>
+<p>Finally trigger a <code>docker build</code>. Flag <code>--pull=true</code> will force downloading the
+latest versions of the base images, the ones from the <code>FROM</code> instructions. For
+example if an image is based on Debian this flag will force Docker to download
+the latest version of Debian image. The Docker cache has been already populated
+so this is not superfluous. If skipped the new build could use an outdated base
+image which could have security vulnerabilities.</p>
+<h2>Run the tests</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">script</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker run -d --name mariadb -e MYSQL_ALLOW_EMPTY_PASSWORD=yes -e MYSQL_DATABASE=foo mariadb:10.0</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker run ${DOCKER_REPOSITORY}:${TRAVIS_COMMIT} flake8 foo</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker run --link mariadb:db -e CHECK_PORT=3306 -e CHECK_HOST=db giorgos/takis</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">docker run --env-file .env --link mariadb:db ${DOCKER_REPOSITORY}:${TRAVIS_COMMIT} coverage run ./manage.py test</span>
+</pre></div>
+
+
+<p>First start <code>mariadb</code> which is needed for the Django tests to run. Fork to the
+background with <code>-d</code> flag. The <code>--name</code> flag makes linking with other containers
+easier.</p>
+<p>Then run flake8 linter. This is run after <code>mariadb</code> - although it doesn't depend
+on it - to allow some time for the database to download and initialize before it
+gets hit with tests.</p>
+<p>Travis needs about 12 seconds to get MariaDB ready which is usually more than
+the time the linter runs. To wait for the database to become ready before
+running the tests, run Takis. Takis waits for the container named <code>mariadb</code> to
+open port 3306. I <a href="takis-a-util-that-blocks-until-a-port-is-open.html">blogged in detail about Takis</a>
+before.</p>
+<p>Finally run the tests making sure that the database is linked using <code>--link</code> and
+that environment variables needed for the application to initialize are set
+using <code>--env-file</code>.</p>
+<h2>Upload built images to the Hub</h2>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">deploy</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">provider</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">script</span>
+    <span class="l l-Scalar l-Scalar-Plain">script</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">bin/dockerhub.sh</span>
+    <span class="l l-Scalar l-Scalar-Plain">on</span><span class="p p-Indicator">:</span>
+      <span class="l l-Scalar l-Scalar-Plain">branch</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">master</span>
+      <span class="l l-Scalar l-Scalar-Plain">repo</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">foo/bar</span>
+</pre></div>
+
+
+<p>And <code>dockerhub.sh</code></p>
+<div class="highlight"><pre><span></span>docker login -e <span class="s2">&quot;</span><span class="nv">$DOCKER_EMAIL</span><span class="s2">&quot;</span> -u <span class="s2">&quot;</span><span class="nv">$DOCKER_USERNAME</span><span class="s2">&quot;</span> -p <span class="s2">&quot;</span><span class="nv">$DOCKER_PASSWORD</span><span class="s2">&quot;</span>
+docker push <span class="si">${</span><span class="nv">DOCKER_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRAVIS_COMMIT</span><span class="si">}</span>
+docker tag -f <span class="si">${</span><span class="nv">DOCKER_REPOSITORY</span><span class="si">}</span>:<span class="si">${</span><span class="nv">TRAVIS_COMMIT</span><span class="si">}</span> <span class="si">${</span><span class="nv">DOCKER_REPOSITORY</span><span class="si">}</span>:last_successful_build
+docker push <span class="si">${</span><span class="nv">DOCKER_REPOSITORY</span><span class="si">}</span>:last_successful_build
+</pre></div>
+
+
+<p>The <code>deploy</code> step is used to run a script to tag images, login to Docker Hub and
+finally push those tags. This step is run only on <code>branch: master</code> and not on
+pull requests.</p>
+<p>Pull requests will not be able to push to Docker Hub anyway because Travis does
+not include encrypted environment variables to pull requests and therefore,
+there will be no <code>$DOCKER_PASSWORD</code>. In the end of the day this is not a problem
+because you don't want pull requests with arbitrary code to end up in your
+Docker image repository.</p>
+<h2>Set the environment variables</h2>
+<p>Set the environment variables needed to build, test and deploy in <code>env</code> section:</p>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">env</span><span class="p p-Indicator">:</span>
+  <span class="l l-Scalar l-Scalar-Plain">global</span><span class="p p-Indicator">:</span>
+    <span class="c1"># Docker</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DOCKER_REPOSITORY=example/foo</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DOCKER_EMAIL=&quot;foo@example.com&quot;</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DOCKER_USERNAME=&quot;example&quot;</span>
+    <span class="c1"># Django</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DEBUG=False</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DISABLE_SSL=True</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">ALLOWED_HOSTS=*</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">SECRET_KEY=foo</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">DATABASE_URL=mysql://root@db/foo</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">SITE_URL=http://localhost:8000</span>
+    <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">CACHE_URL=dummy://</span>
+</pre></div>
+
+
+<p>and save them to <code>.env</code> file for the docker daemon to access with <code>--env-file</code></p>
+<div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">before_script</span><span class="p p-Indicator">:</span>
+  <span class="p p-Indicator">-</span> <span class="l l-Scalar l-Scalar-Plain">env &gt; .env</span>
+</pre></div>
+
+
+<p>Variables with private data like <code>DOCKER_PASSWORD</code> can be added through Travis'
+web interface.</p>
+<h2>That's all!</h2>
+<p>Pull requests and merges to <code>master</code> are both tested against Docker images and
+successful builds of <code>master</code> are pushed to the Hub and can be directly used to
+production.</p>
+<p>You can find a real life example of <code>.travis.yml</code> in the
+<a href="https://github.com/mozilla/snippets-service/blob/master/.travis.yml">Snippets</a>
+project.</p>
+<p>Edit: Since Aug 2016 Travis upgraded to Docker v1.12 which breaks caching as
+described here. I made a <a href="docker-cache-on-travis-and-docker-112.html">follow-up post to fix caching</a>.</p>
+            <a href="build-and-test-against-docker-images-in-travis.html#" class="go-top">Go Top</a>
+
+<script data-isso="//comments.sealabs.net/"
+        data-isso-require-author="true"
+        src="https://comments.sealabs.net/js/embed.min.js"></script>
+
+<section id="isso-thread"></section><footer class="footer">
+    <p>&copy; Giorgos &ndash;
+        Built with <a href="https://github.com/PurePelicanTheme/pure-single">Pure Theme</a>
+        for <a href="http://blog.getpelican.com/">Pelican</a>
+    </p>
+</footer>        </div>
+    </div>
+    </div>
+    <script>
+        var $top = $('.go-top');
+
+        // Show or hide the sticky footer button
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 200) {
+                $top.fadeIn(200);
+            } else {
+                $top.fadeOut(200);
+            }
+        });
+
+        // Animate the scroll to top
+        $top.click(function(event) {
+            event.preventDefault();
+            $('html, body').animate({scrollTop: 0}, 300);
+        })
+
+        // Makes sure that the href="#" attached to the <a> elements
+        // don't scroll you back up the page.
+        $('body').on('click', 'a[href="#"]', function(event) {
+            event.preventDefault();
+        });
+    </script>
+<!-- Piwik -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    _paq.push(['setTrackerUrl',  'https://api-448b6e19f12fcf271761cd2142df19f6.oasis.sandstorm.io']);
+    _paq.push(['setSiteId', 1]);
+    _paq.push(['setApiToken', 'x6JJRbomwmdId5Q2ehOcpLTlYmI-MhrW9eglor8tEkl']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src='https://8pmftt8ufac639dhs3is.oasis.sandstorm.io/embed.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>></body>
+</html>
