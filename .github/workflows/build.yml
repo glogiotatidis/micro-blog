@@ -1,31 +1,33 @@
-name: regenerate rss
+name: build posts
 
 on:
   push:
     branches: [main]
-    paths: [posts.jsonl, gen_rss.py]
+    paths: [posts/**, build.py, gen_rss.py]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  rss:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
-      - name: regenerate
+      - name: install deps
+        run: pip install pyyaml
+      - name: build
         env:
           SITE_URL: ${{ vars.SITE_URL || 'https://example.com/' }}
-        run: python3 gen_rss.py
+        run: python3 build.py
       - name: commit if changed
         run: |
-          if git diff --quiet -- rss.xml; then echo "no change"; exit 0; fi
+          if git diff --quiet -- posts.jsonl rss.xml; then echo "no change"; exit 0; fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add rss.xml
-          git commit -m "regenerate rss.xml"
+          git add posts.jsonl rss.xml
+          git commit -m "rebuild posts.jsonl and rss.xml"
           git push

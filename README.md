@@ -6,27 +6,42 @@ A zero-build, Twitter-like timeline. Hosted on GitHub Pages.
 
 ## How it works
 
+- Write posts as Markdown files in `posts/` with YAML frontmatter.
+- Run `python3 build.py` to compile them into `posts.jsonl` (and regenerate `rss.xml`).
 - `index.html` + `app.js` + `style.css` render `posts.jsonl` (one JSON object per line, newest first).
-- No build step, no dependencies, no framework. LLMs can't break a build that doesn't exist.
+- No runtime build step, no browser dependencies. Build-time needs Python 3 + PyYAML.
 
 ## Add a post (for humans)
 
-Append one line to `posts.jsonl`:
+Create `posts/YYYY-MM-DD-my-thing.md`:
 
-```json
-{"date":"2026-10-31","title":"my thing","url":"https://...","description":"one-liner","tags":["rust","cli"],"body":"optional markdown","links":[{"label":"GitHub","url":"https://github.com/..."}],"image":null}
+```markdown
+---
+title: my thing
+date: 2026-10-31
+url: https://github.com/...
+description: one-liner
+tags: [rust, cli]
+links:
+  - label: GitHub
+    url: https://github.com/...
+---
+
+Optional body markdown. Paragraphs, fenced code, bullet lists, ## headings.
 ```
+
+Then run `python3 build.py`.
 
 ## Add a post (for an LLM)
 
 Give your LLM this instruction:
 
-> Append exactly one JSON line to `posts.jsonl` in this repo (no trailing comma, valid JSON, one object per line). Fields: `date` (ISO YYYY-MM-DD), `title` (string, required), `url` (string or null), `description` (string or null), `body` (markdown string or null), `tags` (array of strings), `links` (optional array of {label,url} or URL strings for a "See also" list), `image` (url string or null). Newest posts sort first by `date`. Do not edit other lines. Write in the voice described in `style.md` and follow its checklist. Then run `python3 gen_rss.py` (set `SITE_URL` env var to your site URL) to regenerate `rss.xml`.
+> Create a new file `posts/YYYY-MM-DD-<slug>.md` (date = today unless specified). Start with YAML frontmatter between `---` lines: `title` (required), `date` (YYYY-MM-DD), `url` (string or null), `description` (string or null), `tags` (list of strings), `links` (optional list of `{label, url}` or URL strings), `image` (url or null). Then a blank line and the body in Markdown (paragraphs, fenced code, bullet lists, `##`/`###` headings). Write in the voice described in `style.md` and follow its checklist. Do not edit other files. Then run `python3 build.py` (set `SITE_URL` env var to your site URL) to regenerate `posts.jsonl` and `rss.xml`.
 
 Validate before committing:
 
 ```sh
-python3 -c "import json,sys; [json.loads(l) for l in open('posts.jsonl') if l.strip()]; print('ok')"
+python3 build.py && python3 -c "import json; [json.loads(l) for l in open('posts.jsonl') if l.strip()]; print('ok')"
 ```
 
 ## Deploy (GitHub Pages)
@@ -35,10 +50,12 @@ python3 -c "import json,sys; [json.loads(l) for l in open('posts.jsonl') if l.st
 2. Repo → Settings → Pages → Source: "Deploy from a branch" → branch `main`, folder `/ (root)`.
 3. Site appears at `https://<user>.github.io/<repo>/`.
 
+The included GitHub Action regenerates `posts.jsonl` and `rss.xml` on push.
+
 ## Local preview
 
 ```sh
-python3 -m http.server 8000
+python3 build.py && python3 -m http.server 8000
 # open http://localhost:8000
 ```
 
