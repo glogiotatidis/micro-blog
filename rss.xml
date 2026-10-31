@@ -6,6 +6,22 @@
     <description>Personal activity log: things I build, in order.</description>
     <language>en</language>
     <atom:link href="https://example.com/rss.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>A place for the things I build</title>
+      <link>https://example.com/</link>
+      <guid isPermaLink="false">https://example.com/#2026-10-31</guid>
+      <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
+      <description><![CDATA[I'm starting a small timeline to post the things I build, as I build them. Short entries, links, snippets. No comments, no analytics.
 
+I've wanted a place to drop the things I build as I build them. Not a full blog post every time, just a short entry with a link and maybe a snippet. So here it is: a small timeline.
+
+It's a zero-build static site. Posts are Markdown files with a bit of frontmatter; a Python script compiles them into the JSON the page reads. No framework, no build to break. Adding an entry is a new file and one command.
+
+If you want to follow along, there's an RSS feed.
+
+See also:
+- GitHub — https://github.com/glogiotatidis
+- sealabs.net — https://sealabs.net]]></description>
+    </item>
   </channel>
 </rss>
