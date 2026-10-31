@@ -6,23 +6,6 @@
     <description>Personal activity log: things I build, in order.</description>
     <language>en</language>
     <atom:link href="https://example.com/rss.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>takis block until a port is open</title>
-      <link>https://github.com/glogiotatidis/takis</link>
-      <guid isPermaLink="false">https://github.com/glogiotatidis/takis#2026-10-31</guid>
-      <pubDate>Sat, 31 Oct 2026 00:00:00 GMT</pubDate>
-      <description><![CDATA[Our CI tests need MariaDB up before they start, and `sleep 10` fails the day the database takes 11 seconds. Takis checks a host:port once per second and returns when it's open.
 
-It reads `CHECK_PORT` and optionally `CHECK_HOST` from the environment. It's a statically linked Go binary, or use the tiny Docker image:
-
-```
-docker run -e CHECK_PORT=3306 -e CHECK_HOST=db giorgos/takis
-```
-
-My colleague Paul built [urlwait](https://github.com/pmclanahan/urlwait/) for the same problem in Python. Neat!
-
-See also:
-- GitHub — https://github.com/glogiotatidis/takis]]></description>
-    </item>
   </channel>
 </rss>
