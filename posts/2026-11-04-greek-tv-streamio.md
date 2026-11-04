@@ -15,12 +15,7 @@ Six stations, six webtv sites, no shared catalog: Skai hides the episode list in
 
 It currently exports **385 shows and 20,019 episodes**. It answers the three protocol calls, catalog, meta and stream, and every episode resolves to a direct MP4 or HLS URL.
 
-There is no server. A static export writes it all as JSON under `catalog/`, `meta/` and `stream/`, and [GitHub Actions](https://docs.github.com/en/actions) publishes that to Pages: 20,414 files, 10.2 MiB. Every four hours, one job per station, then a merge. A normal run reuses the previous show list and stream URLs, so only new episodes cost a request:
-
-```sh
-python static_export.py                          # every station
-GREEKTV_STATIONS=skai python static_export.py    # just one
-```
+There is no server. A static export writes it all as JSON under `catalog/`, `meta/` and `stream/`, and [GitHub Actions](https://docs.github.com/en/actions) publishes that straight to GitHub Pages: 20,414 files, 10.2 MiB. Every four hours it runs one job per station, with `fail-fast` off so a station that breaks does not take the others down, then merges the artifacts. A normal run reuses the previous show list and stream URLs, so only new episodes cost a request.
 
 Requests go through [curl_cffi](https://github.com/lexiforest/curl_cffi) with a Chrome TLS fingerprint, and the helper honours `Retry-After` on a 429. A daily smoke test resolves a stream, follows the redirect and pulls one segment, which is how I find out a station redesigned its site before a viewer does. Nineteen of those 20,019 episodes come back empty. The rest resolve.
 
