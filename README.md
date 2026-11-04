@@ -36,7 +36,7 @@ Then run `python3 build.py`.
 
 Give your LLM this instruction:
 
-> See the Obsidian note `Style - Giorgos Logiotatidis.md` for the full voice, shape, and checklist. The post schema: `posts/YYYY-MM-DD-<slug>.md` with YAML frontmatter (`title`, `date`, `url`, `description`, `tags`, `links`, `image`) plus a Markdown body. Do not edit other files. Then run `python3 build.py` (set `SITE_URL`) to regenerate `posts.jsonl` and `rss.xml`.
+> Post schema: `posts/YYYY-MM-DD-<slug>.md` with YAML frontmatter (`title`, `date`, `url`, `description`, `tags`, `links`, `image`) plus a Markdown body. Do not edit other files. Then run `python3 build.py` (set `SITE_URL`) to regenerate `posts.jsonl` and `rss.xml`.
 
 Validate before committing:
 
