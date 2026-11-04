@@ -9,3 +9,9 @@ Style - Giorgos Logiotatidis.md
 
 # Pointer removed; style guide lives in Obsidian note
 style.md
+
+# Local preview output (built by preview.py)
+preview/
+
+# Unpublished drafts: same format as posts/, never deployed
+drafts/*.md

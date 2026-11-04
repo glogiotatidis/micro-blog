@@ -32,6 +32,26 @@ Optional body markdown. Paragraphs, fenced code, bullet lists, ## headings.
 
 Then run `python3 build.py`.
 
+## Preview before publishing
+
+Write the entry in `drafts/` instead of `posts/`. Same format, same frontmatter; the directory is gitignored so a draft never reaches the site or the repo.
+
+```sh
+python3 preview.py            # build preview/ and lint the drafts
+python3 preview.py --serve    # same, then serve it on :8765
+```
+
+`preview.py` compiles `posts/` and `drafts/` into `preview/posts.jsonl`, and derives `preview/index.html` from `index.html` so the preview cannot drift from the real page. Entries from `drafts/` render with a `draft` badge and an amber rule down the left side, newest first, mixed in with what is already published.
+
+Publishing is a move:
+
+```sh
+mv drafts/2026-11-04-my-thing.md posts/
+python3 build.py && git add -A && git commit -m "post: my thing" && git push
+```
+
+The lint printed by `preview.py` runs the style checks: title length, description length, em dashes, emoji, hashtags, exclamation marks, and the constructs the renderer does not handle (numbered lists, blockquotes, italics, raw HTML).
+
 ## Add a post (for an LLM)
 
 Give your LLM this instruction:

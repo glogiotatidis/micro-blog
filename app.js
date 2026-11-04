@@ -74,7 +74,7 @@ function formatDate(iso) {
 
 function card(post) {
   const el = document.createElement("article");
-  el.className = "card";
+  el.className = post.draft ? "card card-draft" : "card";
   const title = post.title ? escapeHtml(post.title) : "(untitled)";
   const titleHtml = post.url
     ? `<h2 class="card-title"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${title}</a></h2>`
@@ -91,7 +91,7 @@ function card(post) {
   }).join("");
   const linksHtml = links ? `<div class="see-also"><p class="see-also-title">See also</p><ul>${links}</ul></div>` : "";
   el.innerHTML = `
-    <div class="card-meta"><span class="card-date">${escapeHtml(formatDate(post.date))}</span></div>
+    <div class="card-meta"><span class="card-date">${escapeHtml(formatDate(post.date))}</span>${post.draft ? '<span class="draft-badge">draft</span>' : ""}</div>
     ${titleHtml}
     ${desc}
     ${body}
