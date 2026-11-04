@@ -66,7 +66,12 @@ def load_dir(directory, is_draft):
     for path in sorted(glob.glob(os.path.join(directory, "*.md"))):
         name = os.path.basename(path)
         with open(path, encoding="utf-8") as f:
-            fm, body = split_frontmatter(f.read())
+            text = f.read()
+        try:
+            fm, body = split_frontmatter(text)
+        except Exception as exc:  # noqa: BLE001 - yaml errors name the offset, not the file
+            print(f"  ! {name}: bad YAML frontmatter, skipping ({exc})", file=sys.stderr)
+            continue
         if fm is None:
             print(f"  ! {name}: no YAML frontmatter, skipping", file=sys.stderr)
             continue
