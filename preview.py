@@ -16,14 +16,18 @@ import http.server
 import json
 import os
 import re
+import shutil
 import socket
 import socketserver
 import sys
+
+import sitepage
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 POSTS_DIR = os.path.join(ROOT, "posts")
 DRAFTS_DIR = os.path.join(ROOT, "drafts")
 OUT_DIR = os.path.join(ROOT, "preview")
+SITE_URL = "https://giorgos.sealabs.net/"
 
 try:
     import yaml
@@ -79,10 +83,12 @@ def load_dir(directory, is_draft):
         m = re.match(r"^(\d{4}-\d{2}-\d{2})", slug)
         entry = {
             "date": norm_date(fm.get("date"), m.group(1) if m else None),
+            "slug": slug,
             "title": fm.get("title") or slug,
             "url": fm.get("url"),
             "description": fm.get("description"),
             "body": body or None,
+            "html": sitepage.render_markdown(body) or None,
             "tags": fm.get("tags"),
             "links": norm_links(fm.get("links")),
             "image": fm.get("image"),
@@ -147,6 +153,17 @@ def build():
     with open(os.path.join(OUT_DIR, "posts.jsonl"), "w", encoding="utf-8") as f:
         for p in posts:
             f.write(json.dumps(p, ensure_ascii=False, separators=(",", ":")) + "\n")
+
+    # Permalink pages, so the date links in the timeline work while previewing.
+    pages = os.path.join(OUT_DIR, "p")
+    if os.path.isdir(pages):
+        shutil.rmtree(pages)
+    for _, p in published + drafts:
+        out_dir = os.path.join(pages, p["slug"])
+        os.makedirs(out_dir, exist_ok=True)
+        with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
+            f.write(sitepage.post_page(p, prefix="../../../", site_url=SITE_URL,
+                                       draft=bool(p.get("draft"))))
 
     # Derive the preview page from the real one so they cannot drift apart.
     with open(os.path.join(ROOT, "index.html"), encoding="utf-8") as f:

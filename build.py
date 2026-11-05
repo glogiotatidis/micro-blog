@@ -1,10 +1,14 @@
 #!/usr/bin/env python3
-"""Compile posts/*.md into posts.jsonl (and rss.xml)."""
-import glob, json, os, re, sys
+"""Compile posts/*.md into posts.jsonl, p/<slug>/ permalink pages and rss.xml."""
+import glob, json, os, re, shutil, sys
+
+import sitepage
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 POSTS_DIR = os.path.join(ROOT, "posts")
+PAGES_DIR = os.path.join(ROOT, "p")
 OUT_JSONL = os.path.join(ROOT, "posts.jsonl")
+SITE_URL = os.environ.get("SITE_URL", "").strip() or "https://giorgos.sealabs.net/"
 
 try:
     import yaml
@@ -51,10 +55,12 @@ for path in sorted(glob.glob(os.path.join(POSTS_DIR, "*.md"))):
     date = norm_date(fm.get("date"), fallback_date)
     post = {
         "date": date,
+        "slug": slug,
         "title": fm.get("title") or slug,
         "url": fm.get("url"),
         "description": fm.get("description"),
         "body": body or None,
+        "html": sitepage.render_markdown(body) or None,
         "tags": fm.get("tags"),
         "links": norm_links(fm.get("links")),
         "image": fm.get("image"),
@@ -68,7 +74,19 @@ with open(OUT_JSONL, "w", encoding="utf-8") as f:
 
 print(f"compiled {len(posts)} posts -> {OUT_JSONL}")
 
+# One page per post, so /p/<slug>/ is a real URL. Rebuilt from scratch so a
+# removed or renamed post cannot leave a stale page behind.
+if os.path.isdir(PAGES_DIR):
+    shutil.rmtree(PAGES_DIR)
+for p in posts:
+    out_dir = os.path.join(PAGES_DIR, p["slug"])
+    os.makedirs(out_dir, exist_ok=True)
+    with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
+        f.write(sitepage.post_page(p, prefix="../../", site_url=SITE_URL))
+print(f"rendered {len(posts)} permalink pages -> {PAGES_DIR}")
+
 rss_script = os.path.join(ROOT, "gen_rss.py")
 if os.path.exists(rss_script):
     import subprocess
-    subprocess.run([sys.executable, rss_script], check=False)
+    env = dict(os.environ, SITE_URL=SITE_URL)
+    subprocess.run([sys.executable, rss_script], check=False, env=env)

@@ -15,3 +15,6 @@ preview/
 
 # Unpublished drafts: same format as posts/, never deployed
 drafts/*.md
+
+# Generated permalink pages (build.py)
+p/

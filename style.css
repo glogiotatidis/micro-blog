@@ -297,3 +297,51 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
   border-radius: 6px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+
+/* Permalinks: the date on a card opens that post's own page */
+.card-date a {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.card-date a:hover {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+/* /#slug lands on one entry: mark it without shifting the layout */
+.card.is-target, .card:target {
+  box-shadow: inset 3px 0 0 var(--accent);
+  padding-left: 16px;
+  animation: none;
+}
+
+/* Single post page, /p/<slug>/ */
+.card-post {
+  padding: 40px 0 24px;
+  border-bottom: none;
+  animation: none;
+}
+.card-post .card-title { font-size: 30px; line-height: 1.2; }
+.card-post .card-desc { font-size: 19px; }
+.post-nav {
+  padding: 16px 0 96px;
+  border-top: 1px solid var(--border);
+  margin-top: 8px;
+}
+.post-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  transition: color 0.15s;
+}
+.post-nav a:hover { color: var(--accent); }
+
+@media (max-width: 520px) {
+  .card-post .card-title { font-size: 24px; }
+  .card-post .card-desc { font-size: 17px; }
+}

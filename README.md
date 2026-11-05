@@ -11,6 +11,28 @@ A zero-build, Twitter-like timeline. Hosted on GitHub Pages.
 - `index.html` + `app.js` + `style.css` render `posts.jsonl` (one JSON object per line, newest first).
 - No runtime build step, no browser dependencies. Build-time needs Python 3 + PyYAML.
 
+## Permalinks
+
+Each post has its own page at `p/<slug>/`, e.g.
+`https://giorgos.sealabs.net/p/2026-11-04-greek-tv-streamio/`. The slug is the
+filename without `.md`, so the URL is fixed by the post file.
+
+`build.py` prerenders those pages (`sitepage.py`) and bakes the rendered HTML into
+`posts.jsonl` as an `html` field, so the timeline and the permalink page show the
+same markup. The page carries title, description and Open Graph tags, so a shared
+link previews properly. `p/` is generated, gitignored and rebuilt on every CI run.
+
+On the timeline the date of each card links to that page, and `/#<slug>` scrolls
+to the entry in place, so there are two ways to point at one post.
+
+`sitepage.render_markdown()` is a port of `renderMarkdown()` in `app.js` (app.js
+only falls back to it when a post has no `html`). After touching either one, diff
+the two:
+
+```sh
+node check_render.js > /tmp/js.json   # needs node, renders every post
+```
+
 ## Add a post (for humans)
 
 Create `posts/YYYY-MM-DD-my-thing.md`:

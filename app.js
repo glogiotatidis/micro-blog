@@ -60,8 +60,8 @@ function inline(s) {
   t = t.replace(/`([^`]+)`/g, "<code>$1</code>");
   t = t.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
   t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-  // bare urls
-  t = t.replace(/(^|[\s(])(https?:\/\/[^\s)]+)/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  // bare urls; trailing punctuation stays outside the link
+  t = t.replace(/(^|[\s(])(https?:\/\/[^\s)]*[^\s).,;:!?])/g, '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
   return t;
 }
 
@@ -75,12 +75,19 @@ function formatDate(iso) {
 function card(post) {
   const el = document.createElement("article");
   el.className = post.draft ? "card card-draft" : "card";
+  if (post.slug) el.id = post.slug;
   const title = post.title ? escapeHtml(post.title) : "(untitled)";
   const titleHtml = post.url
     ? `<h2 class="card-title"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${title}</a></h2>`
     : `<h2 class="card-title">${title}</h2>`;
+  // The date is the permalink: it opens the post's own page, /p/<slug>/.
+  const dateText = escapeHtml(formatDate(post.date));
+  const dateHtml = post.slug
+    ? `<span class="card-date"><a href="p/${encodeURIComponent(post.slug)}/" title="permalink to this post">${dateText}</a></span>`
+    : `<span class="card-date">${dateText}</span>`;
   const desc = post.description ? `<p class="card-desc">${inline(post.description)}</p>` : "";
-  const body = post.body ? `<div class="card-body">${renderMarkdown(post.body)}</div>` : "";
+  const bodyHtml = post.html || renderMarkdown(post.body);
+  const body = bodyHtml ? `<div class="card-body">${bodyHtml}</div>` : "";
   const img = post.image ? `<img class="card-image" src="${escapeHtml(post.image)}" alt="" loading="lazy" />` : "";
   const tags = (post.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join("");
   const tagsHtml = tags ? `<div class="card-tags">${tags}</div>` : "";
@@ -91,7 +98,7 @@ function card(post) {
   }).join("");
   const linksHtml = links ? `<div class="see-also"><p class="see-also-title">See also</p><ul>${links}</ul></div>` : "";
   el.innerHTML = `
-    <div class="card-meta"><span class="card-date">${escapeHtml(formatDate(post.date))}</span>${post.draft ? '<span class="draft-badge">draft</span>' : ""}</div>
+    <div class="card-meta">${dateHtml}${post.draft ? '<span class="draft-badge">draft</span>' : ""}</div>
     ${titleHtml}
     ${desc}
     ${body}
@@ -122,9 +129,26 @@ async function load() {
     const frag = document.createDocumentFragment();
     posts.forEach(p => frag.appendChild(card(p)));
     TIMELINE.appendChild(frag);
+    focusHash();
   } catch (e) {
     TIMELINE.innerHTML = `<p class="error">could not load posts: ${escapeHtml(e.message)}</p>`;
   }
 }
+
+// #<slug> opens the timeline at that post, so /#slug is a second way to link
+// one entry without leaving the page.
+function focusHash() {
+  const raw = location.hash.slice(1);
+  if (!raw) return;
+  let id;
+  try { id = decodeURIComponent(raw); } catch (e) { id = raw; }
+  const el = document.getElementById(id);
+  if (!el || !el.classList.contains("card")) return;
+  document.querySelectorAll(".card.is-target").forEach(c => c.classList.remove("is-target"));
+  el.classList.add("is-target");
+  el.scrollIntoView({ block: "start" });
+}
+
+window.addEventListener("hashchange", focusHash);
 
 load();
