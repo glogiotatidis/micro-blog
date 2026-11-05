@@ -22,10 +22,10 @@ filename without `.md`, so the URL is fixed by the post file.
 same markup. The page carries title, description and Open Graph tags, so a shared
 link previews properly. `p/` is generated, gitignored and rebuilt on every CI run.
 
-On the timeline a small `#` next to the date opens that page, and `/#<slug>`
-scrolls to the entry in place. Post titles never link out: the external `url`
-in the frontmatter only feeds `rss.xml`, so anything a reader should click
-belongs in the body or in `links:`.
+On the timeline a small `permalink` link next to the date opens that page, and
+`/#<slug>` scrolls to the entry in place. Post titles never link out: the
+external `url` in the frontmatter only feeds `rss.xml`, so anything a reader
+should click belongs in the body or in `links:`.
 
 `sitepage.render_markdown()` is a port of `renderMarkdown()` in `app.js` (app.js
 only falls back to it when a post has no `html`). After touching either one, diff
