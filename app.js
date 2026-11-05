@@ -79,10 +79,10 @@ function card(post) {
   const title = post.title ? escapeHtml(post.title) : "(untitled)";
   // Titles never link out; the external url lives in the body or in See also.
   const titleHtml = `<h2 class="card-title">${title}</h2>`;
-  // A small "#" next to the date is the permalink to /p/<slug>/.
+  // A small "permalink" link next to the date opens /p/<slug>/.
   const dateText = escapeHtml(formatDate(post.date));
   const permalink = post.slug
-    ? `<a class="card-permalink" href="p/${encodeURIComponent(post.slug)}/" title="permalink" aria-label="permalink to this post">#</a>`
+    ? `<a class="card-permalink" href="p/${encodeURIComponent(post.slug)}/" title="permalink to this post">permalink</a>`
     : "";
   const dateHtml = `<span class="card-date">${dateText}</span>${permalink}`;
   const desc = post.description ? `<p class="card-desc">${inline(post.description)}</p>` : "";
