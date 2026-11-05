@@ -135,11 +135,8 @@ def post_page(post, prefix="../../", site_url=None, draft=False):
         parts.append('<span class="draft-badge">draft</span>')
     meta = "".join(parts)
 
-    if post.get("url"):
-        heading = (f'<h1 class="card-title"><a href="{escape_html(post["url"])}" '
-                   f'target="_blank" rel="noopener">{escape_html(title)}</a></h1>')
-    else:
-        heading = f'<h1 class="card-title">{escape_html(title)}</h1>'
+    # Titles never link out; the external url lives in the body or in See also.
+    heading = f'<h1 class="card-title">{escape_html(title)}</h1>'
 
     desc = (f'<p class="card-desc">{inline(post["description"])}</p>'
             if post.get("description") else "")

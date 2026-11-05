@@ -77,14 +77,14 @@ function card(post) {
   el.className = post.draft ? "card card-draft" : "card";
   if (post.slug) el.id = post.slug;
   const title = post.title ? escapeHtml(post.title) : "(untitled)";
-  const titleHtml = post.url
-    ? `<h2 class="card-title"><a href="${escapeHtml(post.url)}" target="_blank" rel="noopener">${title}</a></h2>`
-    : `<h2 class="card-title">${title}</h2>`;
-  // The date is the permalink: it opens the post's own page, /p/<slug>/.
+  // Titles never link out; the external url lives in the body or in See also.
+  const titleHtml = `<h2 class="card-title">${title}</h2>`;
+  // A small "#" next to the date is the permalink to /p/<slug>/.
   const dateText = escapeHtml(formatDate(post.date));
-  const dateHtml = post.slug
-    ? `<span class="card-date"><a href="p/${encodeURIComponent(post.slug)}/" title="permalink to this post">${dateText}</a></span>`
-    : `<span class="card-date">${dateText}</span>`;
+  const permalink = post.slug
+    ? `<a class="card-permalink" href="p/${encodeURIComponent(post.slug)}/" title="permalink" aria-label="permalink to this post">#</a>`
+    : "";
+  const dateHtml = `<span class="card-date">${dateText}</span>${permalink}`;
   const desc = post.description ? `<p class="card-desc">${inline(post.description)}</p>` : "";
   const bodyHtml = post.html || renderMarkdown(post.body);
   const body = bodyHtml ? `<div class="card-body">${bodyHtml}</div>` : "";
