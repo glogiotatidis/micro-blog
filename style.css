@@ -52,11 +52,11 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
   letter-spacing: 0.01em;
 }
 
-.timeline { padding: 40px 0 96px; display: flex; flex-direction: column; gap: 32px; }
+.timeline { padding: 48px 0 120px; display: flex; flex-direction: column; gap: 44px; }
 
 .card {
   position: relative;
-  padding: 4px 0 32px;
+  padding: 8px 0 44px;
   border-bottom: 1px solid var(--border);
   transition: border-color 0.2s ease;
 }
@@ -101,16 +101,17 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 
 .card-desc {
   color: var(--muted);
-  margin: 0 0 14px;
+  margin: 0 0 18px;
   font-size: 16px;
   line-height: 1.6;
 }
 .card-body {
   color: var(--fg);
   margin: 0 0 14px;
-  font-size: 16px;
+  font-size: 17px;
+  line-height: 1.7;
 }
-.card-body p { margin: 0 0 12px; }
+.card-body p { margin: 0 0 18px; }
 .card-body p:last-child { margin-bottom: 0; }
 .card-body pre {
   background: var(--code);
@@ -246,22 +247,32 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 .links a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
 .links a:hover { border-bottom-color: var(--accent); }
 
-.card-body ul, .see-also ul { margin: 0 0 12px 20px; padding: 0; }
-.card-body ul li, .see-also ul li { margin: 4px 0; }
-.card-body h3, .card-body h4 { font-family: "Iowan Old Style", Georgia, serif; margin: 16px 0 8px; letter-spacing: -0.01em; }
+.card-body ul, .see-also ul { margin: 0 0 16px 20px; padding: 0; }
+.card-body ul li, .see-also ul li { margin: 8px 0; }
+.card-body h3, .card-body h4 { font-family: "Iowan Old Style", Georgia, serif; margin: 22px 0 10px; letter-spacing: -0.01em; }
 .card-body h3 { font-size: 18px; }
 .card-body h4 { font-size: 16px; }
-.see-also { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
-.see-also-title { color: var(--faint); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 6px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
-.site-tagline { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif; font-style: italic; }
+.see-also { margin-top: 18px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.see-also-title { color: var(--faint); font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; margin: 0 0 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+/* See also links had no rule, so they fell back to the browser's blue: unreadable on the dark background */
+.see-also a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.see-also a:hover { border-bottom-color: var(--accent); }
+.site-tagline { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-style: normal; }
 .card-meta, .card-date, .tag, .site-nav, .site-footer, .see-also-title, .site-footer code {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
+/* The subtitle is a hook, not a magazine standfirst: same sans as the body */
 .card-desc {
-  font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
-  font-style: italic;
-  font-size: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-size: 17px;
+  line-height: 1.65;
 }
 
 .card-desc, .card-body p, .about p {
