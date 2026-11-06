@@ -25,7 +25,7 @@ A connector hands your agent all 27 tool schemas before it knows it needs any of
 
 Finding the wire was the actual work. The endpoint is in no directory I could query, and about ninety guessed paths 404'd before I gave up guessing. I exported a HAR of my own Claude session with the connector page open, and the URL was sitting right there in the browser traffic. Once I had it, [Hermes](https://hermes-agent.nousresearch.com/) running DeepSeek flash wrote the whole client in one night while I slept: 1,400 lines of Python, 33 tests.
 
-The OAuth endpoints and the MCP server both answer plain HTTP, so the CLI has zero runtime dependencies, stdlib only. Two honest limits: search returns at most 10 results per call, and the price you get is `cart_price` (plus `lowest_price`), the number Skroutz's own cart would charge you. There is no per-shop offer list anymore, so don't expect this to compare sellers.
+The OAuth endpoints and the MCP server both answer plain HTTP, so the CLI has zero runtime dependencies, stdlib only. Two honest limits: search returns at most 10 results per call, and the price you get is `cart_price` (plus `lowest_price`), the number Skroutz's own cart would charge you. There is no per-shop offer list on the MCP side, so don't expect this to compare sellers.
 
 See also:
 - Source on GitHub — https://github.com/glogiotatidis/skroutz-cli
