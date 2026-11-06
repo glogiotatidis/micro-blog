@@ -177,14 +177,14 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
   gap: 12px;
   flex-wrap: wrap;
 }
-.footer-rss {
+.feed-link {
   color: var(--muted);
   text-decoration: none;
   border-bottom: 1px solid transparent;
   transition: color 0.15s, border-color 0.15s;
   text-align: right;
 }
-.footer-rss:hover {
+.feed-link:hover {
   color: var(--fg);
   border-bottom-color: var(--muted);
 }
