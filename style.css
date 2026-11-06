@@ -252,8 +252,7 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 .card-body blockquote {
   position: relative;
   margin: 36px 0;
-  padding: 10px 0 10px 24px;
-  border-left: 3px solid var(--accent);
+  padding: 8px 0 8px 10px;
   font-family: "Iowan Old Style", Georgia, serif;
   font-size: 25px;
   line-height: 1.4;
@@ -263,15 +262,15 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 .card-body blockquote::before {
   content: "\201C";
   position: absolute;
-  top: -0.3em;
-  left: 8px;
+  top: 0.1em;
+  left: -4px;
   z-index: 0;
   font-family: Georgia, "Iowan Old Style", serif;
-  font-size: 110px;
+  font-size: 104px;
   font-weight: 700;
   line-height: 1;
   color: var(--accent);
-  opacity: 0.16;
+  opacity: 0.13;
   pointer-events: none;
 }
 .card-body blockquote p {
@@ -281,11 +280,11 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 }
 .card-body blockquote strong { font-weight: 600; }
 @media (max-width: 600px) {
-  .card-body blockquote { font-size: 21px; padding-left: 16px; margin: 28px 0; }
-  .card-body blockquote::before { font-size: 80px; left: 2px; }
+  .card-body blockquote { font-size: 21px; padding-left: 8px; margin: 28px 0; }
+  .card-body blockquote::before { font-size: 78px; left: -6px; }
 }
 @media (prefers-color-scheme: dark) {
-  .card-body blockquote::before { opacity: 0.22; }
+  .card-body blockquote::before { opacity: 0.18; }
 }
 .card-body h3, .card-body h4 { font-family: "Iowan Old Style", Georgia, serif; margin: 22px 0 10px; letter-spacing: -0.01em; }
 .card-body h3 { font-size: 18px; }
