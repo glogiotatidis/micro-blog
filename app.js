@@ -30,6 +30,16 @@ function renderMarkdown(src) {
       out += "<pre><code>" + escapeHtml(code.join("\n")) + "</code></pre>";
       continue;
     }
+    if (/^>\s?/.test(line)) {
+      flushPara();
+      const quoted = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        quoted.push(lines[i].replace(/^>\s?/, ""));
+        i++;
+      }
+      out += "<blockquote><p>" + inline(quoted.join(" ")) + "</p></blockquote>";
+      continue;
+    }
     if (/^#{2,3}\s+/.test(line)) {
       flushPara();
       const level = line.startsWith("###") ? "h4" : "h3";

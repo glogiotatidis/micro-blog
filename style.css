@@ -249,6 +249,21 @@ h1, h2, h3 { font-family: "Iowan Old Style", "Palatino Linotype", "Book Antiqua"
 
 .card-body ul, .see-also ul { margin: 0 0 16px 20px; padding: 0; }
 .card-body ul li, .see-also ul li { margin: 8px 0; }
+.card-body blockquote {
+  margin: 30px 0;
+  padding: 6px 0 6px 24px;
+  border-left: 3px solid var(--accent);
+  font-family: "Iowan Old Style", Georgia, serif;
+  font-size: 25px;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--fg);
+}
+.card-body blockquote p { margin: 0; }
+.card-body blockquote strong { font-weight: 600; }
+@media (max-width: 600px) {
+  .card-body blockquote { font-size: 21px; padding-left: 16px; margin: 24px 0; }
+}
 .card-body h3, .card-body h4 { font-family: "Iowan Old Style", Georgia, serif; margin: 22px 0 10px; letter-spacing: -0.01em; }
 .card-body h3 { font-size: 18px; }
 .card-body h4 { font-size: 16px; }

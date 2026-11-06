@@ -59,6 +59,14 @@ def render_markdown(src):
             i += 1
             out.append("<pre><code>" + escape_html("\n".join(code)) + "</code></pre>")
             continue
+        if re.match(r"^>\s?", line):
+            flush()
+            quoted = []
+            while i < len(lines) and re.match(r"^>\s?", lines[i]):
+                quoted.append(re.sub(r"^>\s?", "", lines[i]))
+                i += 1
+            out.append("<blockquote><p>" + inline(" ".join(quoted)) + "</p></blockquote>")
+            continue
         if re.match(r"^#{2,3}\s+", line):
             flush()
             level = "h4" if line.startswith("###") else "h3"

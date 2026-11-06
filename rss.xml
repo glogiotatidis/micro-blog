@@ -17,9 +17,9 @@
 
 Two earlier attempts are gone from the code now. First, scraping the storefront with [curl_cffi](https://github.com/lexiforest/curl_cffi) to fake a Chrome TLS fingerprint past Cloudflare. Then replaying browser session cookies to drive a cart, which got far enough to place a real order and cancel it just to prove the path worked. Both deleted once the MCP door turned out to be unlocked.
 
-### A connector is a tax on every conversation. A CLI is a tool you pick up.
+> A connector is a tax on every conversation. A CLI is a tool you pick up.
 
-A connector hands your agent all 27 tool schemas before it knows it needs any of them, every single conversation. **A CLI is a capability you pick up when you need it and put down again, which is why it suits a harness more than a chat window.** That is true of Hermes, [openclaw](https://github.com/openclaw), Claude Code, or anything else that can open a shell. [Anthropic measured the same shape](https://www.anthropic.com/engineering/code-execution-with-mcp): agents writing code against MCP servers instead of loading their schemas dropped from 150,000 tokens to 2,000.
+A connector hands your agent all 27 tool schemas before it knows it needs any of them, every single conversation. A CLI is a capability you pick up when you need it and put down again, which is why it suits a harness more than a chat window. That is true of Hermes, [openclaw](https://github.com/openclaw), Claude Code, or anything else that can open a shell. [Anthropic measured the same shape](https://www.anthropic.com/engineering/code-execution-with-mcp): agents writing code against MCP servers instead of loading their schemas dropped from 150,000 tokens to 2,000.
 
 **MCP is the wire. A CLI is the handle you actually turn.**
 
