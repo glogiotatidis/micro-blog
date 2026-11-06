@@ -1,5 +1,5 @@
 ---
-title: "skroutz-cli: the same MCP server, a thinner handle"
+title: "skroutz-cli: built for personal assistants"
 date: 2026-11-06
 url: https://github.com/glogiotatidis/skroutz-cli
 description: "A CLI for skroutz.gr that logs into my real account over OAuth and calls the exact MCP server Skroutz built for its ChatGPT and Claude connectors: 27 tools, no schemas parked in your context."
